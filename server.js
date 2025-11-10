@@ -110,16 +110,11 @@ app.use((req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`\nServidor rodando em http://localhost:${port}`);
-  console.log(`Acesse http://localhost:${port}/index.html no navegador\n`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`\nServidor rodando em http://localhost:${port}`);
+    console.log(`Acesse http://localhost:${port}/index.html no navegador\n`);
+  });
+}
 
-process.on("SIGTERM", () => {
-  console.log("👋 SIGTERM recebido. Encerrando servidor graciosamente...");
-  process.exit(0);
-});
-process.on("SIGINT", () => {
-  console.log("👋 SIGINT recebido. Encerrando servidor graciosamente...");
-  process.exit(0);
-});
+export default app;
