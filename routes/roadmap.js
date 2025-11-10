@@ -1,9 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const Roadmap = require("../models/Roadmap");
-const { protect } = require("../middleware/auth").default;
+import { Router } from "express";
+import Roadmap from "../models/Roadmap.js";
+import authMiddleware from "../middleware/auth.js";
 
-// Todas as rotas aqui são protegidas
+const router = Router();
+const { protect } = authMiddleware;
+
 router.use(protect);
 
 // @route   GET /api/roadmap
@@ -143,4 +144,4 @@ router.delete("/reset", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

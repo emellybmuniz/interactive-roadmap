@@ -1,9 +1,10 @@
 import { Router } from "express";
-const router = Router();
-import { findOne, create, findByIdAndDelete } from "../models/User";
-import { create as _create, findOneAndDelete } from "../models/Roadmap";
-import { protect, generateToken } from "../middleware/auth";
+import User from "../models/User.js";
+import Roadmap from "../models/Roadmap.js";
+import authMiddleware from "../middleware/auth.js";
 
+const router = Router();
+const { protect, generateToken } = authMiddleware;
 // @route   POST /api/auth/register
 // @desc    Registrar novo usuário
 // @access  Public
@@ -18,7 +19,7 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    const userExists = await findOne({ email });
+    const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
         success: false,
@@ -26,13 +27,13 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    const user = await create({
+    const user = await User.create({
       name,
       email,
       password,
     });
 
-    await _create({
+    await Roadmap.create({
       userId: user._id,
     });
 
@@ -73,7 +74,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Find user by email (with password)
-    const user = await findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return res.status(401).json({
@@ -136,9 +137,9 @@ router.get("/me", protect, async (req, res) => {
 // @access  Private
 router.delete("/delete", protect, async (req, res) => {
   try {
-    await findOneAndDelete({ userId: req.user._id });
+    await Roadmap.findOneAndDelete({ userId: req.user._id });
 
-    await findByIdAndDelete(req.user._id);
+    await User.findByIdAndDelete(req.user._id);
 
     res.status(200).json({
       success: true,
