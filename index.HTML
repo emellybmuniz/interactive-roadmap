@@ -470,7 +470,7 @@
       let overallChartInstance = null;
       let phaseChartInstance = null;
 
-      const API_BASE_URL = "http://localhost:3000"; 
+      const API_BASE_URL = "http://localhost:3000/api"; 
 
       const AuthManager = {
         token: localStorage.getItem("authToken"),
@@ -494,7 +494,7 @@
 
         async validateToken() {
           try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
               headers: { Authorization: `Bearer ${this.token}` },
             });
             return response.ok;
@@ -505,7 +505,7 @@
 
         async loadUserData() {
           try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
               headers: { Authorization: `Bearer ${this.token}` },
             });
             if (response.ok) {
@@ -520,7 +520,7 @@
 
         async register(name, email, password) {
           try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name, email, password }),
@@ -545,7 +545,7 @@
 
         async login(email, password) {
           try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ email, password }),
@@ -600,7 +600,7 @@
           )
             return;
           try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/delete`, {
+            const response = await fetch(`${API_BASE_URL}/auth/delete`, {
               method: "DELETE",
               headers: { Authorization: `Bearer ${this.token}` },
             });
@@ -615,7 +615,7 @@
 
         async loadRoadmapFromServer() {
           try {
-            const response = await fetch(`${API_BASE_URL}/api/roadmap`, {
+            const response = await fetch(`${API_BASE_URL}/roadmap`, {
               headers: { Authorization: `Bearer ${this.token}` },
             });
             if (response.ok) {
@@ -633,7 +633,7 @@
           this.isSyncing = true;
           this.updateSyncStatus("syncing");
           try {
-            const response = await fetch(`${API_BASE_URL}/api/roadmap`, {
+            const response = await fetch(`${API_BASE_URL}/roadmap`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -791,7 +791,7 @@
         document.getElementById("gemini-modal-loader").style.display = "flex";
         document.getElementById("gemini-modal-text").innerHTML = "";
         try {
-            const response = await fetch(`${API_BASE_URL}/api/gemini`, {
+            const response = await fetch(`${API_BASE_URL}/gemini`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt }),

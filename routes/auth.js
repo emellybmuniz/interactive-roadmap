@@ -137,8 +137,7 @@ router.get('/me', protect, async (req, res) => {
 router.delete('/delete', protect, async (req, res) => {
     try {
         await Roadmap.findOneAndDelete({ userId: req.user._id });
-        
-o
+
         await User.findByIdAndDelete(req.user._id);
 
         res.status(200).json({
