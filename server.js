@@ -108,6 +108,11 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Fallback route to serve index.html for non-API routes
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.resolve(__dirname, "index.html"));
+});
+
 app.use((err, req, res, next) => {
   console.error("Erro não tratado:", err);
   res.status(500).json({

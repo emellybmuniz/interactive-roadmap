@@ -8,20 +8,8 @@
     ],
     "rewrites": [
       {
-        "source": "/api/(.*)",
-        "destination": "/server.js"
-      },
-      {
-        "source": "/css/(.*)",
-        "destination": "/css/$1"
-      },
-      {
-        "source": "/favicon.ico",
-        "destination": "/favicon.ico"
-      },
-      {
         "source": "/(.*)",
-        "destination": "/index.html"
+        "destination": "/server.js"
       }
     ]
   }
