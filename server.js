@@ -19,6 +19,9 @@ const allowedOrigins = [
   "http://localhost:5500", 
   "http://localhost:3000",
   "https://path4developers.vercel.app",
+  "https://path4developers.vercel.app/",
+  "https://path4developers-eslucr2ys-emellybmunizs-projects.vercel.app/",
+  "https://path4developers-eslucr2ys-emellybmunizs-projects.vercel.app"
 ];
 
 

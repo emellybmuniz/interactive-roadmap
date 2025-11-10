@@ -5,35 +5,29 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-
 const connectDB = async () => {
   if (cached.conn) {
+    console.log("Usando conexão MongoDB cacheada.");
     return cached.conn;
   }
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
     };
-
+    console.log("Criando nova conexão com o MongoDB...");
     cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
       console.log("MongoDB conectado com sucesso!");
       return mongoose;
     });
   }
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("MongoDB conectado com sucesso!");
+    cached.conn = await cached.promise;
   } catch (error) {
+    cached.promise = null;
     console.error("Erro ao conectar ao MongoDB:", error);
-    process.exit(1);
+    throw error;
   }
-
-  mongoose.connection.on("disconnected", () => {
-    console.log("MongoDB desconectado!");
-  });
-  mongoose.connection.on("error", (error) => {
-    console.error("Erro na conexão com o MongoDB:", error);
-  });
+  return cached.conn;
 };
 
 export default connectDB;

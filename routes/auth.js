@@ -87,8 +87,8 @@ router.post("/login", async (req, res) => {
 
     if (!isPasswordCorrect) {
       return res.status(401).json({
-        success: false,
-        message: "Credenciais inválidas",
+      success: false,
+      message: "Parece que suas credenciais estão incorretas. Verifique seu email e senha e tente novamente!",
       });
     }
 
@@ -108,7 +108,7 @@ router.post("/login", async (req, res) => {
     console.error("Erro no login:", error);
     res.status(500).json({
       success: false,
-      message: "O servidor está ocupado no momento. Por favor, verifique sua conexão e tente novamente mais tarde.",
+      message: "Não foi possível realizar o login. Por favor, verifique suas credenciais e tente novamente.",
     });
   }
 });
