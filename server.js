@@ -14,6 +14,8 @@ await connectDB();
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 const allowedOrigins = [
   "http://127.0.0.1:5500", 
   "http://localhost:5500", 
@@ -29,7 +31,6 @@ if (process.env.VERCEL_URL) {
   allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
 }
 
-// allow client url from env variables
 if (process.env.CLIENT_URL && !allowedOrigins.includes(process.env.CLIENT_URL)) {
   allowedOrigins.push(process.env.CLIENT_URL);
 }
@@ -48,7 +49,6 @@ app.use(
 );
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 const requiredEnvVars = [
   "GEMINI_API_KEY",
@@ -78,9 +78,9 @@ app.use(express.static(__dirname));
 
 const apiLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 15,
+  max: 10,
   message:
-    "Muitas requisições foram enviadas em um curto espaço de tempo, por favor, tente novamente em um minuto.",
+    "Muitas requisições foram enviadas. Aguarde um minuto e tente novamente.",
   standardHeaders: true,
   legacyHeaders: false,
 });
