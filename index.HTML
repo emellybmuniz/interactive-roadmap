@@ -556,7 +556,8 @@
               this.currentUser = data.user;
               localStorage.setItem("authToken", data.token);
               this.showAuthenticatedUI();
-              await this.loadRoadmapFromServer();
+
+              await this.saveRoadmapToServer();
               return { success: true, message: data.message };
             }
             return { success: false, message: data.message };
