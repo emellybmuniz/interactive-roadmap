@@ -1,631 +1,1367 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roadmap Customizável Full-Stack com IA ✨</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roadmap Customizável com IA ✨</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-        }
-        .chart-container {
-            position: relative;
-            margin: auto;
-            height: 280px;
-            width: 100%;
-            max-width: 280px;
-        }
-        .bar-chart-container {
-            position: relative;
-            margin: auto;
-            height: 320px;
-            width: 100%;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e2e8f0; /* slate-200 */
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8; /* slate-400 */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; /* slate-500 */
-        }
-        .modal-header-button {
-            font-size: 2rem;
-            line-height: 1;
-            font-weight: 600;
-        }
-        .action-icon {
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        li:hover .action-icon {
-            opacity: 1;
-        }
-        .phase-header .action-icon {
-            opacity: 1;
-        }
-        .drop-indicator {
-            height: 4px;
-            background-color: #2dd4bf; 
-            border-radius: 2px;
-            margin: -2px 0;
-        }
-        li.dragging {
-            opacity: 0.4;
-        }
-        body.resizing, body.resizing * {
-            cursor: col-resize !important;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-    </style>
-</head>
-<body class="text-slate-700">
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+      }
+      .chart-container {
+        position: relative;
+        margin: auto;
+        height: 280px;
+        width: 100%;
+        max-width: 280px;
+      }
+      .bar-chart-container {
+        position: relative;
+        margin: auto;
+        height: 320px;
+        width: 100%;
+      }
 
+      #sidebar nav {
+        -webkit-mask-image: linear-gradient(to bottom, transparent, black 1rem, black calc(100% - 1rem), transparent);
+        mask-image: linear-gradient(to bottom, transparent, black 1rem, black calc(100% - 1rem), transparent);
+        scrollbar-width: none; /* Firefox */
+      }
+      #sidebar nav::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #e2e8f0;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+      .modal-header-button {
+        font-size: 2rem;
+        line-height: 1;
+        font-weight: 600;
+      }
+      .action-icon {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      li:hover .action-icon {
+        opacity: 1;
+      }
+      .phase-header .action-icon {
+        opacity: 1;
+      }
+      .drop-indicator {
+        height: 4px;
+        background-color: #2dd4bf;
+        border-radius: 2px;
+        margin: -2px 0;
+      }
+      li.dragging {
+        opacity: 0.4;
+      }
+      body.resizing,
+      body.resizing * {
+        cursor: col-resize !important;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .auth-only {
+        display: none;
+      }
+      .sync-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #f0fdfa;
+        border: 1px solid #99f6e4;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        color: #134e4a;
+      }
+      .sync-indicator.syncing {
+        background-color: #fef3c7;
+        border-color: #fde68a;
+        color: #78350f;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .spinning {
+        animation: spin 1s linear infinite;
+      }
+    </style>
+  </head>
+  <body class="text-slate-700">
     <!-- Sidebar Toggle Button (Mobile) -->
-    <button id="sidebar-toggle-open" class="md:hidden fixed top-4 left-4 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-md shadow-lg text-slate-600 hover:text-slate-900 transition-opacity">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    <button
+      id="sidebar-toggle-open"
+      class="md:hidden fixed top-4 left-4 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-md shadow-lg text-slate-600 hover:text-slate-900 transition-opacity"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
     </button>
 
     <div class="flex min-h-screen">
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="bg-white border-r border-slate-200 p-6 fixed top-0 left-0 h-full flex flex-col transition-transform duration-300 ease-in-out z-40 -translate-x-full md:translate-x-0" style="width: 328px;">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-xl font-bold text-slate-800">Fases do Roadmap</h1>
-                <button id="sidebar-toggle-close" class="md:hidden text-slate-500 hover:text-slate-800 transition-colors text-3xl leading-none">&times;</button>
+      <!-- Sidebar Navigation -->
+      <aside
+        id="sidebar"
+        class="bg-white border-r border-slate-200 p-6 fixed top-0 left-0 h-full flex flex-col transition-transform duration-300 ease-in-out z-40 -translate-x-full md:translate-x-0"
+        style="width: 328px"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-xl font-bold text-slate-800">Fases do Roadmap</h1>
+          <button
+            id="sidebar-toggle-close"
+            class="md:hidden text-slate-500 hover:text-slate-800 transition-colors text-3xl leading-none"
+          >
+            &times;
+          </button>
+        </div>
+
+        <!-- Indicador de sincronização -->
+        <div id="sync-status" class="sync-indicator mb-4 auth-only">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+          <span id="sync-text">Sincronizado</span>
+        </div>
+
+        <nav class="flex-grow overflow-y-auto">
+          <ul id="sidebar-nav" class="space-y-2">
+            <!-- Navigation links will be injected here -->
+          </ul>
+        </nav>
+        <div
+          class="mt-6 pt-6 border-t border-slate-200 flex-shrink-0 space-y-3"
+        >
+          <div class="guest-only space-y-3">
+
+            <button
+            onclick="showFormModal({ type: 'phase', mode: 'add' })"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-semibold"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Adicionar Fase
+          </button>
+            <button
+              onclick="showAuthModal('register')"
+              class="w-full px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 font-semibold transition-colors"
+            >
+              Salvar Roadmap
+            </button>
+            <button
+              onclick="showAuthModal('login')"
+              class="w-full px-4 py-2 text-teal-600 hover:text-teal-700 font-medium border border-teal-600 rounded-lg hover:bg-teal-50 transition-colors"
+            >
+              Carregar Roadmap
+            </button>
+
+            <p class="text-xs text-slate-500 text-center pb-2">
+                Crie uma conta para salvar e acessar seu progresso de qualquer
+                lugar.
+              </p>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- Resizer Handle -->
+      <div
+        id="resizer"
+        class="w-1.5 cursor-col-resize bg-slate-200/50 hover:bg-teal-400 transition-colors duration-200 fixed top-0 h-full z-20 hidden md:block"
+        style="left: 328px"
+      ></div>
+
+      <!-- Main Content -->
+      <main
+        id="main-content"
+        class="flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300 ease-in-out"
+      >
+        <header class="mb-8">
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          >
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-2">
+                Roadmap de Desenvolvimento Tech
+              </h1>
+              <p class="text-lg text-slate-500">
+                Uma jornada visual e interativa, com o poder da IA ✨ integrada
+                para acelerar seu aprendizado.
+              </p>
             </div>
-            <nav class="flex-grow overflow-y-auto">
-                <ul id="sidebar-nav" class="space-y-2">
-                    <!-- Navigation links will be injected here -->
-                </ul>
-            </nav>
-            <div class="mt-6 flex-shrink-0">
-                <button onclick="showFormModal({ type: 'phase', mode: 'add' })" class="w-full px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors font-semibold">Adicionar Fase</button>
-            </div>
-        </aside>
 
-        <!-- Resizer Handle -->
-        <div id="resizer" class="w-1.5 cursor-col-resize bg-slate-200/50 hover:bg-teal-400 transition-colors duration-200 fixed top-0 h-full z-20 hidden md:block" style="left: 328px;"></div>
-
-        <!-- Main Content -->
-        <main id="main-content" class="flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300 ease-in-out">
-            <header class="mb-8">
-                <h1 class="text-4xl font-bold text-slate-900 mb-2">Roadmap de Desenvolvimento Full-Stack</h1>
-                <p class="text-lg text-slate-500">Uma jornada visual e interativa, com o poder da IA ✨ integrada para acelerar seu aprendizado.</p>
-            </header>
-
-            <!-- Dashboard Section -->
-            <section id="dashboard" class="mb-12">
-                <h2 class="text-2xl font-semibold text-slate-800 mb-4 border-b pb-2">Painel de Progresso 🎯</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-sm">
-                        <h3 class="font-semibold text-center mb-4">Progresso Geral</h3>
-                        <div class="chart-container">
-                            <canvas id="overallProgressChart"></canvas>
-                        </div>
-                        <div id="stats" class="text-center mt-4"></div>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm xl:col-span-2">
-                        <h3 class="font-semibold text-left mb-4">Progresso por Fase</h3>
-                        <div class="bar-chart-container">
-                             <canvas id="phaseProgressChart"></canvas>
-                        </div>
-                    </div>
+            <!-- Auth Buttons -->
+            <div class="flex items-center gap-3">
+              <!-- Authenticated user menu -->
+              <div class="auth-only flex items-center gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-sm text-slate-500">Olá,</span>
+                  <span
+                    id="user-name-display"
+                    class="font-semibold text-slate-800"
+                  ></span>
                 </div>
-            </section>
-            
-            <div id="roadmap-content" class="space-y-12"></div>
-        </main>
-    </div>
-    
-    <!-- Modals -->
-    <!-- Overlay for mobile sidebar -->
-    <div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black/50 z-30 hidden"></div>
+                <div class="relative group">
+                  <button
+                    class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    <svg
+                      class="w-6 h-6 text-slate-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <div
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+                  >
+                    <button
+                      onclick="AuthManager.deleteAccount()"
+                      class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-t-lg transition-colors"
+                    >
+                      Deletar Conta
+                    </button>
+                    <button
+                      onclick="AuthManager.logout()"
+                      class="w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-b-lg transition-colors"
+                    >
+                      Sair
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
 
-    <div id="gemini-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"><div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"><header class="p-4 border-b border-slate-200 flex justify-between items-center flex-shrink-0"><h3 id="gemini-modal-title" class="text-lg font-semibold text-slate-800"></h3><button onclick="hideModal('gemini-modal')" class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button">&times;</button></header><div class="p-6 overflow-y-auto"><div id="gemini-modal-loader" class="flex justify-center items-center h-48"><div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-500"></div></div><div id="gemini-modal-text" class="text-slate-600 leading-relaxed space-y-4"></div></div></div></div>
-    <div id="form-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"><div class="bg-white rounded-xl shadow-2xl w-full max-w-lg"><header class="p-4 border-b border-slate-200 flex justify-between items-center"><h3 id="form-modal-title" class="text-lg font-semibold text-slate-800"></h3><button onclick="hideModal('form-modal')" class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button">&times;</button></header><div id="form-modal-content" class="p-6"></div></div></div>
-    <div id="confirm-modal" class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"><div class="bg-white rounded-xl shadow-2xl w-full max-w-sm"><header class="p-4 flex justify-between items-center"><h3 id="confirm-modal-title" class="text-lg font-semibold text-red-600"></h3><button onclick="hideModal('confirm-modal')" class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button">&times;</button></header><div class="p-6 pt-0"><p id="confirm-modal-text" class="text-slate-600 mb-6"></p><div class="flex justify-end gap-4"><button id="confirm-modal-cancel" class="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300">Cancelar</button><button id="confirm-modal-confirm" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Confirmar</button></div></div></div></div>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="mb-12">
+          <h2 class="text-2xl font-semibold text-slate-800 mb-4 border-b pb-2">
+            Painel de Progresso 🎯
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+              <h3 class="font-semibold text-center mb-4">Progresso Geral</h3>
+              <div class="chart-container">
+                <canvas id="overallProgressChart"></canvas>
+              </div>
+              <div id="stats" class="text-center mt-4"></div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm xl:col-span-2">
+              <h3 class="font-semibold text-left mb-4">Progresso por Fase</h3>
+              <div class="bar-chart-container">
+                <canvas id="phaseProgressChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div id="roadmap-content" class="space-y-12"></div>
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <div
+      id="sidebar-overlay"
+      class="md:hidden fixed inset-0 bg-black/50 z-30 hidden"
+    ></div>
+    <div
+      id="gemini-modal"
+      class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+      >
+        <header
+          class="p-4 border-b border-slate-200 flex justify-between items-center flex-shrink-0"
+        >
+          <h3
+            id="gemini-modal-title"
+            class="text-lg font-semibold text-slate-800"
+          ></h3>
+          <button
+            onclick="hideModal('gemini-modal')"
+            class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 overflow-y-auto">
+          <div
+            id="gemini-modal-loader"
+            class="flex justify-center items-center h-48"
+          >
+            <div
+              class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-500"
+            ></div>
+          </div>
+          <div
+            id="gemini-modal-text"
+            class="text-slate-600 leading-relaxed space-y-4"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="form-modal"
+      class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"
+    >
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+        <header
+          class="p-4 border-b border-slate-200 flex justify-between items-center"
+        >
+          <h3
+            id="form-modal-title"
+            class="text-lg font-semibold text-slate-800"
+          ></h3>
+          <button
+            onclick="hideModal('form-modal')"
+            class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button"
+          >
+            &times;
+          </button>
+        </header>
+        <div id="form-modal-content" class="p-6"></div>
+      </div>
+    </div>
+    <div
+      id="confirm-modal"
+      class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"
+    >
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm">
+        <header class="p-4 flex justify-between items-center">
+          <h3
+            id="confirm-modal-title"
+            class="text-lg font-semibold text-red-600"
+          ></h3>
+          <button
+            onclick="hideModal('confirm-modal')"
+            class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 pt-0">
+          <p id="confirm-modal-text" class="text-slate-600 mb-6"></p>
+          <div class="flex justify-end gap-4">
+            <button
+              id="confirm-modal-cancel"
+              class="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300"
+            >
+              Cancelar</button
+            ><button
+              id="confirm-modal-confirm"
+              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
-        let roadmapData = [
-            { phase: "0", title: "Mindset", description: "Esta é a fundação invisível. É o que sustenta todo o conhecimento técnico.", items: [{ text: "Mentalidade Orientada a Problemas", checked: false },{ text: "Aprendizado Contínuo", checked: false }]},
-            { phase: "1", title: "Fundamentos Universais", description: "A base da web.", items: [{ text: "Git & GitHub", checked: true },{ text: "HTTP/HTTPS", checked: true, subItems: [{ text: "DNS", checked: false }]}]},
-            { phase: "2", title: "Desenvolvimento Front-End", description: "Construindo a interface.", items: [{ text: "HTML", checked: true },{ text: "CSS", checked: true },{ text: "JavaScript", checked: false, subItems: [{ text: "Assincronicidade", checked: false }]}]},
-        ];
+      let roadmapData = [
+        {
+          phase: "0",
+          title: "Mindset",
+          description:
+            "Esta é a fundação invisível. É o que sustenta todo o conhecimento técnico.",
+          items: [
+            { text: "Mentalidade Orientada a Problemas", checked: false },
+            { text: "Aprendizado Contínuo", checked: false },
+          ],
+        },
+        {
+          phase: "1",
+          title: "Fundamentos Universais",
+          description: "A base da web.",
+          items: [
+            { text: "Git & GitHub", checked: true },
+            {
+              text: "HTTP/HTTPS",
+              checked: true,
+              subItems: [{ text: "DNS", checked: false }],
+            },
+          ],
+        },
+        {
+          phase: "2",
+          title: "Desenvolvimento Front-End",
+          description: "Construindo a interface.",
+          items: [
+            { text: "HTML", checked: true },
+            { text: "CSS", checked: true },
+            {
+              text: "JavaScript",
+              checked: false,
+              subItems: [{ text: "Assincronicidade", checked: false }],
+            },
+          ],
+        },
+      ];
 
-        // Global variables for UI and state
-        const modals = ['gemini-modal', 'form-modal', 'confirm-modal'];
-        let overallChartInstance = null;
-        let phaseChartInstance = null;
+      const modals = ["gemini-modal", "form-modal", "confirm-modal"];
+      let overallChartInstance = null;
+      let phaseChartInstance = null;
 
-        // --- Sidebar Management ---
-        function toggleSidebar(open) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const openBtn = document.getElementById('sidebar-toggle-open');
+      const API_BASE_URL = "http://localhost:3000/api"; 
 
-            if (open) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                openBtn.classList.add('opacity-0', 'pointer-events-none');
+      const AuthManager = {
+        token: localStorage.getItem("authToken"),
+        currentUser: null,
+        isSyncing: false,
+
+        async init() {
+          if (this.token) {
+            const isValid = await this.validateToken();
+            if (isValid) {
+              await this.loadUserData();
+              this.showAuthenticatedUI();
+              await this.loadRoadmapFromServer();
             } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-                openBtn.classList.remove('opacity-0', 'pointer-events-none');
+              this.logout();
             }
-        }
+          } else {
+            this.showGuestUI();
+          }
+        },
 
-        // --- Modal Management ---
-        function showModal(modalId) { document.getElementById(modalId).classList.remove('hidden'); }
-        function hideModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
-        function hideAllModals() { modals.forEach(hideModal); }
+        async validateToken() {
+          try {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+            return response.ok;
+          } catch (error) {
+            return false;
+          }
+        },
 
-        // --- Gemini API ---
-        async function callGeminiAPI(prompt, retries = 3, delay = 1000) {
-            document.getElementById('gemini-modal-loader').style.display = 'flex';
-            document.getElementById('gemini-modal-text').innerHTML = '';
-
-            const apiUrl = '/api/gemini'; 
-            try {
-                const response = await fetch(apiUrl, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ prompt: prompt }) 
-                });
-                if (!response.ok) throw new Error(`API Error: ${response.status} - ${await response.text()}`);
-                const result = await response.json();
-                const text = result.text;
-                const formattedText = text ? text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-800">$1</strong>').replace(/\n/g, '<br>') : "Não foi possível obter uma resposta.";
-                document.getElementById('gemini-modal-loader').style.display = 'none';
-                document.getElementById('gemini-modal-text').innerHTML = formattedText;
-            } catch (error) {
-                if (retries > 0) { await new Promise(res => setTimeout(res, delay)); callGeminiAPI(prompt, retries - 1, delay * 2); } 
-                else { 
-                    document.getElementById('gemini-modal-loader').style.display = 'none';
-                    document.getElementById('gemini-modal-text').innerHTML = `Desculpe, não conseguimos conectar ao servidor no momento. Por favor, verifique sua conexão e tente novamente mais tarde.`; 
-                }; 
-                }
+        async loadUserData() {
+          try {
+            const response = await fetch(`${API_BASE_URL}/auth/me`, {
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+            if (response.ok) {
+              const data = await response.json();
+              this.currentUser = data.user;
+              this.updateUserDisplay();
             }
-            
-        function getExplanation(topic, event) {
-            event.stopPropagation();
-            document.getElementById('gemini-modal-title').textContent = `Explicando: ${topic}`;
-            showModal('gemini-modal');
-            const prompt = `Explique o que é "${topic}" para um desenvolvedor de software. Foque nos conceitos chave. Responda em português do Brasil em um ou dois parágrafos.`;
-            callGeminiAPI(prompt);
-        }
-        function getTopicsFromItems(items, topicList = []) {
-            items.forEach(item => { topicList.push(item.text); if (item.subItems) getTopicsFromItems(item.subItems, topicList); });
-            return topicList;
-        }
-        function getProjectSuggestion(phaseIndex, event) {
-            event.stopPropagation();
-            const phase = roadmapData[phaseIndex];
-            if (!phase) return;
-            document.getElementById('gemini-modal-title').textContent = `Sugerindo projeto para: ${phase.title}`;
-            showModal('gemini-modal');
-            const topicsList = getTopicsFromItems(phase.items).join(', ');
-            const prompt = `Sugira um mini-projeto para um desenvolvedor que está estudando "${phase.title}" e os tópicos: ${topicsList}. Descreva o projeto, suas funcionalidades e tecnologias. Responda em português do Brasil.`;
-            callGeminiAPI(prompt);
-        }
+          } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+          }
+        },
 
-        // --- CRUD and State Management ---
-        function findItemContextByPath(path) {
-            const indices = path.split(',').map(Number);
-            const phaseIndex = indices.shift();
-            
-            let parent = roadmapData[phaseIndex];
-            let list = parent.items;
-            
-            const targetIndex = indices.pop();
-            
-            // Traverse to the parent list
-            for (const index of indices) {
-                parent = list[index];
-                list = parent.subItems;
+        async register(name, email, password) {
+          try {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, password }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+              this.token = data.token;
+              this.currentUser = data.user;
+              localStorage.setItem("authToken", data.token);
+              this.showAuthenticatedUI();
+              await this.loadRoadmapFromServer();
+              return { success: true, message: data.message };
             }
-            
-            const item = list[targetIndex];
-            
-            return { parent, list, item, index: targetIndex };
-        }
-
-        function moveItem(sourcePathStr, targetPathStr, position) {
-            const { item: sourceItem } = findItemContextByPath(sourcePathStr);
-            if (!sourceItem) return;
-
-            // Find target context
-            const { list: targetList, index: targetIndex } = findItemContextByPath(targetPathStr);
-            if (!targetList) return;
-
-            // Calculate insertion index
-            let insertIndex = position === 'before' ? targetIndex : targetIndex + 1;
-
-            // Find and remove source item *after* calculating target, but *before* inserting
-            const { list: sourceList, index: sourceIndex } = findItemContextByPath(sourcePathStr);
-            if (!sourceList) return;
-            
-            // Adjust insertIndex if moving within the same list
-            if (sourceList === targetList && sourceIndex < insertIndex) {
-                insertIndex--;
-            }
-
-            sourceList.splice(sourceIndex, 1);
-            targetList.splice(insertIndex, 0, sourceItem);
-        }
-
-        function showConfirmModal({ title, text, onConfirm }) {
-            document.getElementById('confirm-modal-title').textContent = title;
-            document.getElementById('confirm-modal-text').textContent = text;
-            const confirmBtn = document.getElementById('confirm-modal-confirm');
-            const cancelBtn = document.getElementById('confirm-modal-cancel');
-            
-            const confirmHandler = () => {
-                onConfirm();
-                hideModal('confirm-modal');
-                cleanup();
+            return { success: false, message: data.message };
+          } catch (error) {
+            return {
+              success: false,
+              message: "Erro ao conectar com o servidor",
             };
-            const cancelHandler = () => {
-                hideModal('confirm-modal');
-                cleanup();
-            };
-            const cleanup = () => {
-                confirmBtn.removeEventListener('click', confirmHandler);
-                cancelBtn.removeEventListener('click', cancelHandler);
-            };
+          }
+        },
 
-            confirmBtn.addEventListener('click', confirmHandler);
-            cancelBtn.addEventListener('click', cancelHandler);
-            showModal('confirm-modal');
-        }
+        async login(email, password) {
+          try {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+              this.token = data.token;
+              this.currentUser = data.user;
+              localStorage.setItem("authToken", data.token);
+              this.showAuthenticatedUI();
 
-        function showFormModal({ type, mode, path = '', phaseIndex = -1 }) {
-            const isPhase = type === 'phase';
-            const isAdd = mode === 'add';
-            const title = `${isAdd ? 'Adicionar' : 'Editar'} ${isPhase ? 'Fase' : 'Item'}`;
-            let currentData = {};
-
-            if (!isAdd) {
-                if (isPhase) {
-                    currentData = roadmapData[parseInt(path)];
-                } else {
-                    currentData = findItemContextByPath(path).item;
-                }
+              await this.saveRoadmapToServer();
+              return { success: true, message: data.message };
             }
+            return { success: false, message: data.message };
+          } catch (error) {
+            return {
+              success: false,
+              message: "Erro ao conectar com o servidor",
+            };
+          }
+        },
 
-            document.getElementById('form-modal-title').textContent = title;
-            const formContent = document.getElementById('form-modal-content');
-            
-            formContent.innerHTML = `
+        logout() {
+          localStorage.removeItem("authToken");
+          this.token = null;
+          this.currentUser = null;
+          this.showGuestUI();
+          roadmapData = [
+            {
+              phase: "0",
+              title: "Mindset",
+              description: "Esta é a fundação invisível.",
+              items: [
+                { text: "Mentalidade Orientada a Problemas", checked: false },
+              ],
+            },
+            {
+              phase: "1",
+              title: "Fundamentos Universais",
+              description: "A base da web.",
+              items: [{ text: "Git & GitHub", checked: false }],
+            },
+          ];
+          renderApp();
+        },
+
+        async deleteAccount() {
+          if (
+            !confirm(
+              "Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita!"
+            )
+          )
+            return;
+          try {
+            const response = await fetch(`${API_BASE_URL}/auth/delete`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+            if (response.ok) {
+              alert("Conta deletada com sucesso!");
+              this.logout();
+            }
+          } catch (error) {
+            alert("Erro ao deletar conta");
+          }
+        },
+
+        async loadRoadmapFromServer() {
+          try {
+            const response = await fetch(`${API_BASE_URL}/roadmap`, {
+              headers: { Authorization: `Bearer ${this.token}` },
+            });
+            if (response.ok) {
+              const data = await response.json();
+              roadmapData = data.roadmap;
+              renderApp();
+            }
+          } catch (error) {
+            console.error("Erro ao carregar roadmap:", error);
+          }
+        },
+
+        async saveRoadmapToServer() {
+          if (!this.token || this.isSyncing) return;
+          this.isSyncing = true;
+          this.updateSyncStatus("syncing");
+          try {
+            const response = await fetch(`${API_BASE_URL}/roadmap`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${this.token}`,
+              },
+              body: JSON.stringify({ roadmapData }),
+            });
+            if (response.ok) {
+              this.updateSyncStatus("synced");
+            } else {
+              this.updateSyncStatus("error");
+            }
+          } catch (error) {
+            this.updateSyncStatus("error");
+          } finally {
+            this.isSyncing = false;
+          }
+        },
+
+        updateSyncStatus(status) {
+          const indicator = document.getElementById("sync-status");
+          const text = document.getElementById("sync-text");
+          if (!indicator || !text) return;
+
+          indicator.classList.remove("syncing");
+          const icon = indicator.querySelector("svg");
+
+          if (status === "syncing") {
+            indicator.classList.add("syncing");
+            text.textContent = "Salvando...";
+            icon.classList.add("spinning");
+          } else if (status === "synced") {
+            text.textContent = "Sincronizado";
+            icon.classList.remove("spinning");
+          } else {
+            text.textContent = "Erro ao salvar";
+            icon.classList.remove("spinning");
+          }
+        },
+
+        updateUserDisplay() {
+          const el = document.getElementById("user-name-display");
+          if (el && this.currentUser) el.textContent = this.currentUser.name;
+        },
+
+        showAuthenticatedUI() {
+          document
+            .querySelectorAll(".guest-only")
+            .forEach((el) => (el.style.display = "none"));
+          document
+            .querySelectorAll(".auth-only")
+            .forEach((el) => (el.style.display = "block"));
+          this.updateUserDisplay();
+        },
+
+        showGuestUI() {
+          document
+            .querySelectorAll(".guest-only")
+            .forEach((el) => (el.style.display = "block"));
+          document
+            .querySelectorAll(".auth-only")
+            .forEach((el) => (el.style.display = "none"));
+        },
+      };
+
+      function showAuthModal(mode = "login") {
+        const title = mode === "login" ? "Entrar" : "Criar Conta";
+        const buttonText = mode === "login" ? "Entrar" : "Registrar";
+        const switchText =
+          mode === "login"
+            ? "Não tem uma conta? Registre-se"
+            : "Já tem uma conta? Entre";
+
+        document.getElementById("form-modal-title").textContent = title;
+        document.getElementById("form-modal-content").innerHTML = `
+                <form id="auth-form" class="space-y-4">
+                    ${
+                      mode === "register"
+                        ? `<div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nome</label>
+                        <input type="text" id="auth-name" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                    </div>`
+                        : ""
+                    }
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                        <input type="email" id="auth-email" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+                        <input type="password" id="auth-password" required minlength="6" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                        <p class="text-xs text-slate-500 mt-1">Mínimo 6 caracteres</p>
+                    </div>
+                    <div id="auth-error" class="text-red-600 text-sm hidden"></div>
+                    <div class="flex flex-col gap-3">
+                        <button type="submit" class="w-full px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 font-semibold">${buttonText}</button>
+                        <button type="button" onclick="showAuthModal('${
+                          mode === "login" ? "register" : "login"
+                        }')" class="text-sm text-teal-600 hover:text-teal-700">${switchText}</button>
+                    </div>
+                </form>
+            `;
+
+        document.getElementById("auth-form").onsubmit = async (e) => {
+          e.preventDefault();
+          const errorDiv = document.getElementById("auth-error");
+          errorDiv.classList.add("hidden");
+          const email = document.getElementById("auth-email").value;
+          const password = document.getElementById("auth-password").value;
+          let result;
+          if (mode === "register") {
+            const name = document.getElementById("auth-name").value;
+            result = await AuthManager.register(name, email, password);
+          } else {
+            result = await AuthManager.login(email, password);
+          }
+          if (result.success) {
+            hideModal("form-modal");
+            alert(result.message);
+          } else {
+            errorDiv.textContent = result.message;
+            errorDiv.classList.remove("hidden");
+          }
+        };
+        showModal("form-modal");
+      }
+
+      // Resto do código original continua aqui...
+      function toggleSidebar(open) {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        const openBtn = document.getElementById("sidebar-toggle-open");
+        if (open) {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+          openBtn.classList.add("opacity-0", "pointer-events-none");
+        } else {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+          openBtn.classList.remove("opacity-0", "pointer-events-none");
+        }
+      }
+
+      function showModal(modalId) {
+        document.getElementById(modalId).classList.remove("hidden");
+      }
+      function hideModal(modalId) {
+        document.getElementById(modalId).classList.add("hidden");
+      }
+      function hideAllModals() {
+        modals.forEach(hideModal);
+      }
+
+      async function callGeminiAPI(prompt, retries = 3, delay = 1000) {
+        document.getElementById("gemini-modal-loader").style.display = "flex";
+        document.getElementById("gemini-modal-text").innerHTML = "";
+        try {
+            const response = await fetch(`${API_BASE_URL}/gemini`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }),
+          });
+          if (!response.ok) throw new Error(`API Error: ${response.status}`);
+          const result = await response.json();
+          const formattedText = result.text
+            ? result.text
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/\n/g, "<br>")
+            : "Não foi possível obter resposta.";
+          document.getElementById("gemini-modal-loader").style.display = "none";
+          document.getElementById("gemini-modal-text").innerHTML =
+            formattedText;
+        } catch (error) {
+          if (retries > 0) {
+            await new Promise((res) => setTimeout(res, delay));
+            callGeminiAPI(prompt, retries - 1, delay * 2);
+          } else {
+            document.getElementById("gemini-modal-loader").style.display =
+              "none";
+            document.getElementById("gemini-modal-text").innerHTML =
+              "Erro ao conectar.";
+          }
+        }
+      }
+
+      function getExplanation(topic, event) {
+        event.stopPropagation();
+        document.getElementById(
+          "gemini-modal-title"
+        ).textContent = `Explicando: ${topic}`;
+        showModal("gemini-modal");
+        callGeminiAPI(
+          `Explique "${topic}" para desenvolvedor. Responda em português do Brasil em 1-2 parágrafos.`
+        );
+      }
+
+      function getTopicsFromItems(items, topicList = []) {
+        items.forEach((item) => {
+          topicList.push(item.text);
+          if (item.subItems) getTopicsFromItems(item.subItems, topicList);
+        });
+        return topicList;
+      }
+
+      function getProjectSuggestion(phaseIndex, event) {
+        event.stopPropagation();
+        const phase = roadmapData[phaseIndex];
+        if (!phase) return;
+        document.getElementById(
+          "gemini-modal-title"
+        ).textContent = `Projeto: ${phase.title}`;
+        showModal("gemini-modal");
+        const topics = getTopicsFromItems(phase.items).join(", ");
+        callGeminiAPI(
+          `Sugira mini-projeto para "${phase.title}" com: ${topics}. Português do Brasil.`
+        );
+      }
+
+      function findItemContextByPath(path) {
+        const indices = path.split(",").map(Number);
+        const phaseIndex = indices.shift();
+        let parent = roadmapData[phaseIndex];
+        let list = parent.items;
+        const targetIndex = indices.pop();
+        for (const index of indices) {
+          parent = list[index];
+          list = parent.subItems;
+        }
+        return { parent, list, item: list[targetIndex], index: targetIndex };
+      }
+
+      function moveItem(sourcePathStr, targetPathStr, position) {
+        const { item: sourceItem } = findItemContextByPath(sourcePathStr);
+        if (!sourceItem) return;
+        const { list: targetList, index: targetIndex } =
+          findItemContextByPath(targetPathStr);
+        if (!targetList) return;
+        let insertIndex = position === "before" ? targetIndex : targetIndex + 1;
+        const { list: sourceList, index: sourceIndex } =
+          findItemContextByPath(sourcePathStr);
+        if (!sourceList) return;
+        if (sourceList === targetList && sourceIndex < insertIndex)
+          insertIndex--;
+        sourceList.splice(sourceIndex, 1);
+        targetList.splice(insertIndex, 0, sourceItem);
+      }
+
+      function showConfirmModal({ title, text, onConfirm }) {
+        document.getElementById("confirm-modal-title").textContent = title;
+        document.getElementById("confirm-modal-text").textContent = text;
+        const confirmBtn = document.getElementById("confirm-modal-confirm");
+        const cancelBtn = document.getElementById("confirm-modal-cancel");
+        const confirmHandler = () => {
+          onConfirm();
+          hideModal("confirm-modal");
+          cleanup();
+        };
+        const cancelHandler = () => {
+          hideModal("confirm-modal");
+          cleanup();
+        };
+        const cleanup = () => {
+          confirmBtn.removeEventListener("click", confirmHandler);
+          cancelBtn.removeEventListener("click", cancelHandler);
+        };
+        confirmBtn.addEventListener("click", confirmHandler);
+        cancelBtn.addEventListener("click", cancelHandler);
+        showModal("confirm-modal");
+      }
+
+      function showFormModal({ type, mode, path = "", phaseIndex = -1 }) {
+        const isPhase = type === "phase";
+        const isAdd = mode === "add";
+        const title = `${isAdd ? "Adicionar" : "Editar"} ${
+          isPhase ? "Fase" : "Item"
+        }`;
+        let currentData = {};
+        if (!isAdd) {
+          currentData = isPhase
+            ? roadmapData[parseInt(path)]
+            : findItemContextByPath(path).item;
+        }
+        document.getElementById("form-modal-title").textContent = title;
+        document.getElementById("form-modal-content").innerHTML = `
                 <div class="space-y-4">
                     <div>
-                        <label for="form-input-text" class="block text-sm font-medium text-slate-700">${isPhase ? 'Título da Fase' : 'Nome do Item'}</label>
-                        <input type="text" id="form-input-text" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm" value="${(isPhase ? currentData.title : currentData.text) || ''}">
+                        <label for="form-input-text" class="block text-sm font-medium text-slate-700">${
+                          isPhase ? "Título" : "Nome"
+                        }</label>
+                        <input type="text" id="form-input-text" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md" value="${
+                          (isPhase ? currentData.title : currentData.text) || ""
+                        }">
                     </div>
-                    ${isPhase ? `<div>
+                    ${
+                      isPhase
+                        ? `<div>
                         <label for="form-input-desc" class="block text-sm font-medium text-slate-700">Descrição</label>
-                        <textarea id="form-input-desc" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm">${currentData.description || ''}</textarea>
-                    </div>` : ''}
+                        <textarea id="form-input-desc" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md">${
+                          currentData.description || ""
+                        }</textarea>
+                    </div>`
+                        : ""
+                    }
                 </div>
                 <div class="flex justify-end mt-6">
                     <button id="form-save-btn" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Salvar</button>
                 </div>
             `;
-            
-            document.getElementById('form-save-btn').onclick = () => {
-                const newText = document.getElementById('form-input-text').value;
-                if (!newText.trim()) return;
-
-                if (isPhase) {
-                    const newDesc = document.getElementById('form-input-desc').value;
-                    if (isAdd) {
-                        roadmapData.push({ phase: String(roadmapData.length), title: newText, description: newDesc, items: [] });
-                    } else {
-                        roadmapData[parseInt(path)].title = newText;
-                        roadmapData[parseInt(path)].description = newDesc;
-                    }
-                } else {
-                    if (isAdd) {
-                        const newItem = { text: newText, checked: false };
-                        if (path) {
-                            const { item } = findItemContextByPath(path);
-                            if (!item.subItems) item.subItems = [];
-                            item.subItems.push(newItem);
-                        } else {
-                            roadmapData[phaseIndex].items.push(newItem);
-                        }
-                    } else {
-                        findItemContextByPath(path).item.text = newText;
-                    }
-                }
-                renderApp();
-                hideModal('form-modal');
-            };
-
-            showModal('form-modal');
-        }
-        
-        function handleCrud(action, type, path = '', event) {
-            if (event) event.stopPropagation();
-            const isPhase = type === 'phase';
-            const phaseIndex = parseInt(path.split(',')[0]);
-
-            if (action === 'delete') {
-                const title = `Excluir ${isPhase ? 'Fase' : 'Item'}`;
-                const text = `Você tem certeza? Esta ação ${isPhase ? 'excluirá a fase e todos os seus itens e' : ''} não pode ser desfeita.`;
-                showConfirmModal({ title, text, onConfirm: () => {
-                    if (isPhase) {
-                        roadmapData.splice(phaseIndex, 1);
-                        roadmapData.forEach((p, i) => p.phase = String(i)); 
-                    } else {
-                        const { list, index } = findItemContextByPath(path);
-                        list.splice(index, 1);
-                    }
-                    renderApp();
-                }});
-            } else { 
-                showFormModal({ type, mode: action, path });
+        document.getElementById("form-save-btn").onclick = () => {
+          const newText = document.getElementById("form-input-text").value;
+          if (!newText.trim()) return;
+          if (isPhase) {
+            const newDesc = document.getElementById("form-input-desc").value;
+            if (isAdd) {
+              roadmapData.push({
+                phase: String(roadmapData.length),
+                title: newText,
+                description: newDesc,
+                items: [],
+              });
+            } else {
+              roadmapData[parseInt(path)].title = newText;
+              roadmapData[parseInt(path)].description = newDesc;
             }
-        }
-        
-        function toggleTask(path, event) {
-            if (event) event.stopPropagation();
-            const { item } = findItemContextByPath(path);
-            if (item) {
-                item.checked = !item.checked;
-                renderApp();
+          } else {
+            if (isAdd) {
+              const newItem = { text: newText, checked: false };
+              if (path) {
+                const { item } = findItemContextByPath(path);
+                if (!item.subItems) item.subItems = [];
+                item.subItems.push(newItem);
+              } else {
+                roadmapData[phaseIndex].items.push(newItem);
+              }
+            } else {
+              findItemContextByPath(path).item.text = newText;
             }
+          }
+          renderApp();
+          hideModal("form-modal");
+        };
+        showModal("form-modal");
+      }
+
+      function handleCrud(action, type, path = "", event) {
+        if (event) event.stopPropagation();
+        const isPhase = type === "phase";
+        const phaseIndex = parseInt(path.split(",")[0]);
+        if (action === "delete") {
+          showConfirmModal({
+            title: `Excluir ${isPhase ? "Fase" : "Item"}`,
+            text: `Confirma exclusão?`,
+            onConfirm: () => {
+              if (isPhase) {
+                roadmapData.splice(phaseIndex, 1);
+                roadmapData.forEach((p, i) => (p.phase = String(i)));
+              } else {
+                const { list, index } = findItemContextByPath(path);
+                list.splice(index, 1);
+              }
+              renderApp();
+            },
+          });
+        } else {
+          showFormModal({ type, mode: action, path });
         }
+      }
 
-        function renderApp() {
-            hideAllModals();
-            const sidebarNav = document.getElementById('sidebar-nav');
-            const roadmapContent = document.getElementById('roadmap-content');
-            sidebarNav.innerHTML = '';
-            roadmapContent.innerHTML = '';
-            if (overallChartInstance) overallChartInstance.destroy();
-            if (phaseChartInstance) phaseChartInstance.destroy();
+      function toggleTask(path, event) {
+        if (event) event.stopPropagation();
+        const { item } = findItemContextByPath(path);
+        if (item) {
+          item.checked = !item.checked;
+          renderApp();
+        }
+      }
 
-            let totalItems = 0, completedItems = 0;
-            const phaseProgress = [];
+      function renderApp() {
+        hideAllModals();
+        const sidebarNav = document.getElementById("sidebar-nav");
+        const roadmapContent = document.getElementById("roadmap-content");
+        sidebarNav.innerHTML = "";
+        roadmapContent.innerHTML = "";
+        if (overallChartInstance) overallChartInstance.destroy();
+        if (phaseChartInstance) phaseChartInstance.destroy();
 
-            const countItems = (items) => {
-                let counts = { total: 0, completed: 0 };
-                items.forEach(item => {
-                    counts.total++;
-                    if (item.checked) counts.completed++;
-                    if (item.subItems) {
-                        const subCounts = countItems(item.subItems);
-                        counts.total += subCounts.total;
-                        counts.completed += subCounts.completed;
-                    }
-                });
-                return counts;
-            };
-            
-            const renderList = (items, pathPrefix) => {
-                let html = '<ul class="space-y-1 mt-4 pl-4 border-l-2 border-slate-200">';
-                items.forEach((item, index) => {
-                    const currentPath = `${pathPrefix},${index}`;
-                    const icon = item.checked ? '✅' : '⬜️';
-                    html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 rounded-md p-2 hover:bg-slate-100 group cursor-pointer">
+        let totalItems = 0,
+          completedItems = 0;
+        const phaseProgress = [];
+
+        const countItems = (items) => {
+          let counts = { total: 0, completed: 0 };
+          items.forEach((item) => {
+            counts.total++;
+            if (item.checked) counts.completed++;
+            if (item.subItems) {
+              const subCounts = countItems(item.subItems);
+              counts.total += subCounts.total;
+              counts.completed += subCounts.completed;
+            }
+          });
+          return counts;
+        };
+
+        const renderList = (items, pathPrefix) => {
+          let html =
+            '<ul class="space-y-1 mt-4 pl-4 border-l-2 border-slate-200">';
+          items.forEach((item, index) => {
+            const currentPath = `${pathPrefix},${index}`;
+            const icon = item.checked ? "✅" : "⬜️";
+            html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 rounded-md p-2 hover:bg-slate-100 group cursor-pointer">
                         <div class="flex items-center justify-between">
-                            <span class="flex items-center cursor-pointer" onclick="toggleTask('${currentPath}', event)"><span class="mr-3">${icon}</span><span>${item.text}</span></span>
+                            <span class="flex items-center cursor-pointer" onclick="toggleTask('${currentPath}', event)"><span class="mr-3">${icon}</span><span>${
+              item.text
+            }</span></span>
                             <span class="action-icon flex items-center gap-3 text-lg">
-                                <span onclick="handleCrud('add', 'item', '${currentPath}', event)" title="Adicionar Sub-item">➕</span>
-                                <span onclick="handleCrud('edit', 'item', '${currentPath}', event)" title="Editar Item">✏️</span>
-                                <span onclick="getExplanation('${item.text.replace(/'/g, "\\'")}', event)" title="Explicar com IA">✨</span>
-                                <span onclick="handleCrud('delete', 'item', '${currentPath}', event)" title="Excluir Item">🗑️</span>
+                                <span onclick="handleCrud('add', 'item', '${currentPath}', event)" title="Adicionar">➕</span>
+                                <span onclick="handleCrud('edit', 'item', '${currentPath}', event)" title="Editar">✏️</span>
+                                <span onclick="getExplanation('${item.text.replace(
+                                  /'/g,
+                                  "\\'"
+                                )}', event)" title="IA">✨</span>
+                                <span onclick="handleCrud('delete', 'item', '${currentPath}', event)" title="Excluir">🗑️</span>
                             </span>
                         </div>`;
-                    if (item.subItems) html += renderList(item.subItems, currentPath);
-                    html += `</li>`;
-                });
-                return html + '</ul>';
-            };
+            if (item.subItems) html += renderList(item.subItems, currentPath);
+            html += `</li>`;
+          });
+          return html + "</ul>";
+        };
 
-            if (roadmapData.length === 0) {
-                roadmapContent.innerHTML = `<div class="text-center p-12 bg-white rounded-xl shadow-sm"><h2 class="text-2xl font-semibold text-slate-800">Roadmap Vazio!</h2><p class="text-slate-500 mt-2">Comece adicionando uma nova fase usando o botão na barra lateral.</p></div>`;
-            }
+        if (roadmapData.length === 0) {
+          roadmapContent.innerHTML =
+            '<div class="text-center p-12 bg-white rounded-xl"><h2 class="text-2xl font-semibold">Roadmap Vazio</h2></div>';
+        }
 
-            roadmapData.forEach((phase, phaseIndex) => {
-                const counts = countItems(phase.items);
-                totalItems += counts.total;
-                completedItems += counts.completed;
-                phaseProgress.push({ percentage: counts.total > 0 ? (counts.completed / counts.total) * 100 : 0 });
+        roadmapData.forEach((phase, phaseIndex) => {
+          const counts = countItems(phase.items);
+          totalItems += counts.total;
+          completedItems += counts.completed;
+          phaseProgress.push({
+            percentage:
+              counts.total > 0 ? (counts.completed / counts.total) * 100 : 0,
+          });
 
-                const navLink = document.createElement('a');
-                navLink.href = `#phase-${phase.phase}`;
-                navLink.className = "flex items-start px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-md";
-                navLink.innerHTML = `<span class="w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold text-teal-600 bg-teal-100 rounded-full mr-3">${phase.phase}</span><span class="break-words pt-1">${phase.title}</span>`;
-                navLink.onclick = () => { if (window.innerWidth < 768) toggleSidebar(false); };
-                const li = document.createElement('li');
-                li.appendChild(navLink);
-                sidebarNav.appendChild(li);
-                
-                roadmapContent.innerHTML += `
+          const navLink = document.createElement("a");
+          navLink.href = `#phase-${phase.phase}`;
+          navLink.className =
+            "flex items-start px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-md";
+          navLink.innerHTML = `<span class="w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold text-teal-600 bg-teal-100 rounded-full mr-3">${phase.phase}</span><span class="break-words pt-1">${phase.title}</span>`;
+          navLink.onclick = () => {
+            if (window.innerWidth < 768) toggleSidebar(false);
+          };
+          const li = document.createElement("li");
+          li.appendChild(navLink);
+          sidebarNav.appendChild(li);
+
+          roadmapContent.innerHTML += `
                     <section id="phase-${phase.phase}" class="pt-4">
                         <div class="bg-white p-6 sm:p-8 rounded-xl shadow-sm">
                             <div class="flex justify-between items-center phase-header">
-                                <h2 class="text-2xl font-semibold text-slate-800">${phase.title}</h2>
+                                <h2 class="text-2xl font-semibold text-slate-800">${
+                                  phase.title
+                                }</h2>
                                 <span class="action-icon flex items-center gap-4 text-xl">
-                                    <span onclick="handleCrud('edit', 'phase', '${phaseIndex}', event)" title="Editar Fase">✏️</span>
-                                    <span onclick="handleCrud('delete', 'phase', '${phaseIndex}', event)" title="Excluir Fase">🗑️</span>
+                                    <span onclick="handleCrud('edit', 'phase', '${phaseIndex}', event)" title="Editar">✏️</span>
+                                    <span onclick="handleCrud('delete', 'phase', '${phaseIndex}', event)" title="Excluir">🗑️</span>
                                 </span>
                             </div>
-                            <p class="text-slate-500 mt-1">${phase.description}</p>
+                            <p class="text-slate-500 mt-1">${
+                              phase.description
+                            }</p>
                             <div class="mt-4">
                                <button onclick="showFormModal({ type: 'item', mode: 'add', phaseIndex: ${phaseIndex} })" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 text-sm font-medium">Adicionar Item</button>
-                               <button onclick="getProjectSuggestion(${phaseIndex}, event)" class="ml-2 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 text-teal-700 rounded-md hover:bg-teal-100 text-sm font-semibold">Sugerir Projeto ✨</button>
+                               <button onclick="getProjectSuggestion(${phaseIndex}, event)" class="ml-2 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 text-teal-700 rounded-md hover:bg-teal-100 text-sm font-semibold">Projeto ✨</button>
                             </div>
                             ${renderList(phase.items, String(phaseIndex))}
                         </div>
                     </section>`;
-            });
-            
-            const overallPercentage = totalItems > 0 ? (completedItems / totalItems * 100).toFixed(1) : 0;
-            document.getElementById('stats').innerHTML = `<p class="text-4xl font-bold text-slate-800">${overallPercentage}%</p><p class="text-sm text-slate-500">${completedItems} de ${totalItems} itens concluídos</p>`;
-
-            const overallCtx = document.getElementById('overallProgressChart').getContext('2d');
-            overallChartInstance = new Chart(overallCtx, { type: 'doughnut', data: { labels: ['Concluído', 'Pendente'], datasets: [{ data: [completedItems, totalItems - completedItems], backgroundColor: ['#14b8a6', '#e2e8f0'], borderColor: ['#f8fafc'], borderWidth: 1}] }, options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false } } } });
-
-            const phaseCtx = document.getElementById('phaseProgressChart').getContext('2d');
-            phaseChartInstance = new Chart(phaseCtx, { type: 'bar', data: { labels: roadmapData.map(p => `Fase ${p.phase}`), datasets: [{ label: 'Progresso (%)', data: phaseProgress.map(p => p.percentage), backgroundColor: '#5eead4', borderRadius: 4 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { beginAtZero: true, max: 100 }}, plugins: { legend: { display: false }, tooltip: { callbacks: { title: (items) => roadmapData[items[0].dataIndex].title, label: (ctx) => ` Progresso: ${ctx.raw.toFixed(1)}%` }}}, onClick: (e, els) => { if(els.length) document.getElementById(`phase-${roadmapData[els[0].index].phase}`).scrollIntoView({ behavior: 'smooth' }); } } });
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            renderApp();
-
-            // --- Sidebar Toggle Listeners ---
-            document.getElementById('sidebar-toggle-open').addEventListener('click', () => toggleSidebar(true));
-            document.getElementById('sidebar-toggle-close').addEventListener('click', () => toggleSidebar(false));
-            document.getElementById('sidebar-overlay').addEventListener('click', () => toggleSidebar(false));
-
-            // --- Lógica de Redimensionamento da Sidebar ---
-            const sidebar = document.getElementById('sidebar');
-            const resizer = document.getElementById('resizer');
-            const mainContent = document.getElementById('main-content');
-            const minWidth = 200; // Largura mínima em pixels
-            const maxWidth = 500; // Largura máxima em pixels
-
-            function setMainContentMargin() {
-                if (window.innerWidth < 768) { // md breakpoint
-                    mainContent.style.marginLeft = '0px';
-                } else {
-                    mainContent.style.marginLeft = sidebar.style.width;
-                    resizer.style.left = sidebar.style.width;
-                }
-            }
-
-            setMainContentMargin();
-            window.addEventListener('resize', setMainContentMargin);
-
-            resizer.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                document.body.classList.add('resizing');
-
-                const mouseMoveHandler = (moveEvent) => {
-                    let newWidth = moveEvent.clientX;
-                    if (newWidth < minWidth) newWidth = minWidth;
-                    if (newWidth > maxWidth) newWidth = maxWidth;
-
-                    sidebar.style.width = `${newWidth}px`;
-                    setMainContentMargin();
-                };
-
-                const mouseUpHandler = () => {
-                    document.body.classList.remove('resizing');
-                    window.removeEventListener('mousemove', mouseMoveHandler);
-                    window.removeEventListener('mouseup', mouseUpHandler);
-
-     
-                    if (overallChartInstance) overallChartInstance.resize();
-                    if (phaseChartInstance) phaseChartInstance.resize();
-                };
-
-                window.addEventListener('mousemove', mouseMoveHandler);
-                window.addEventListener('mouseup', mouseUpHandler);
-            });
-
-            const roadmapContentEl = document.getElementById('roadmap-content');
-            let draggedPath = null;
-
-            roadmapContentEl.addEventListener('dragstart', e => {
-                const li = e.target.closest('li[draggable="true"]');
-                if (li) {
-                    draggedPath = li.dataset.path;
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', draggedPath);
-                    setTimeout(() => li.classList.add('dragging'), 0);
-                }
-            });
-
-            roadmapContentEl.addEventListener('dragend', e => {
-                const li = e.target.closest('li[draggable="true"]');
-                if (li) {
-                    li.classList.remove('dragging');
-                }
-                document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-                draggedPath = null;
-            });
-
-            roadmapContentEl.addEventListener('dragover', e => {
-                e.preventDefault();
-                const dropTarget = e.target.closest('li[draggable="true"]');
-                
-                document.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-                if (!dropTarget || !draggedPath || dropTarget.dataset.path === draggedPath || (dropTarget.dataset.path && dropTarget.dataset.path.startsWith(draggedPath + ','))) {
-                    return;
-                }
-
-                const rect = dropTarget.getBoundingClientRect();
-                const y = e.clientY - rect.top;
-                
-                const dropIndicator = document.createElement('div');
-                dropIndicator.className = 'drop-indicator';
-
-                if (y < rect.height / 2) {
-                    dropTarget.before(dropIndicator);
-                    dropTarget.dataset.dropPosition = 'before';
-                } else {
-                    dropTarget.after(dropIndicator);
-                    dropTarget.dataset.dropPosition = 'after';
-                }
-            });
-
-            roadmapContentEl.addEventListener('drop', e => {
-                e.preventDefault();
-                const dropTarget = e.target.closest('li[draggable="true"]');
-                if (!dropTarget || !draggedPath) return;
-                const targetPath = dropTarget.dataset.path;
-                const dropPosition = dropTarget.dataset.dropPosition;
-                if (targetPath && draggedPath !== targetPath && !targetPath.startsWith(draggedPath + ',')) {
-                    moveItem(draggedPath, targetPath, dropPosition);
-                    renderApp();
-                }
-            });
-
-            window.addEventListener('scroll', () => {
-                let current = '';
-                const pageYOffset = window.pageYOffset;
-                const viewportHeight = window.innerHeight;
-                const bodyHeight = document.body.scrollHeight;
-
-                const offset = viewportHeight / 3;
-
-                document.querySelectorAll('#roadmap-content section').forEach(section => {
-                    if (pageYOffset >= section.offsetTop - offset) {
-                        current = section.getAttribute('id');
-                    }
-                });
-
-                if (pageYOffset + viewportHeight >= bodyHeight - 5) { 
-                    const lastSection = document.querySelector('#roadmap-content section:last-child');
-                    if (lastSection) {
-                        current = lastSection.getAttribute('id');
-                    }
-                }
-
-                document.querySelectorAll('#sidebar-nav a').forEach(link => {
-                    link.classList.toggle('bg-teal-50', link.getAttribute('href').substring(1) === current);
-                    link.classList.toggle('text-teal-700', link.getAttribute('href').substring(1) === current);
-                    link.classList.toggle('font-semibold', link.getAttribute('href').substring(1) === current);
-                });
-            });
         });
-    </script>
 
-</body>
+        const overallPercentage =
+          totalItems > 0 ? ((completedItems / totalItems) * 100).toFixed(1) : 0;
+        document.getElementById(
+          "stats"
+        ).innerHTML = `<p class="text-4xl font-bold text-slate-800">${overallPercentage}%</p><p class="text-sm text-slate-500">${completedItems} de ${totalItems}</p>`;
+
+        const overallCtx = document
+          .getElementById("overallProgressChart")
+          .getContext("2d");
+        overallChartInstance = new Chart(overallCtx, {
+          type: "doughnut",
+          data: {
+            labels: ["Concluído", "Pendente"],
+            datasets: [
+              {
+                data: [completedItems, totalItems - completedItems],
+                backgroundColor: ["#14b8a6", "#e2e8f0"],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "68%",
+            plugins: { legend: { display: false } },
+          },
+        });
+
+        const phaseCtx = document
+          .getElementById("phaseProgressChart")
+          .getContext("2d");
+        phaseChartInstance = new Chart(phaseCtx, {
+          type: "bar",
+          data: {
+            labels: roadmapData.map((p) => `Fase ${p.phase}`),
+            datasets: [
+              {
+                label: "Progresso (%)",
+                data: phaseProgress.map((p) => p.percentage),
+                backgroundColor: "#5eead4",
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { x: { beginAtZero: true, max: 100 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: (items) => roadmapData[items[0].dataIndex].title,
+                  label: (ctx) => ` ${ctx.raw.toFixed(1)}%`,
+                },
+              },
+            },
+            onClick: (e, els) => {
+              if (els.length)
+                document
+                  .getElementById(`phase-${roadmapData[els[0].index].phase}`)
+                  .scrollIntoView({ behavior: "smooth" });
+            },
+          },
+        });
+
+        clearTimeout(window.saveTimeout);
+        window.saveTimeout = setTimeout(
+          () => AuthManager.saveRoadmapToServer(),
+          2000
+        );
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await AuthManager.init();
+        renderApp();
+
+        document
+          .getElementById("sidebar-toggle-open")
+          .addEventListener("click", () => toggleSidebar(true));
+        document
+          .getElementById("sidebar-toggle-close")
+          .addEventListener("click", () => toggleSidebar(false));
+        document
+          .getElementById("sidebar-overlay")
+          .addEventListener("click", () => toggleSidebar(false));
+
+        const sidebar = document.getElementById("sidebar");
+        const resizer = document.getElementById("resizer");
+        const mainContent = document.getElementById("main-content");
+        const minWidth = 200;
+        const maxWidth = 500;
+
+        function setMainContentMargin() {
+          if (window.innerWidth < 768) {
+            mainContent.style.marginLeft = "0px";
+          } else {
+            mainContent.style.marginLeft = sidebar.style.width;
+            resizer.style.left = sidebar.style.width;
+          }
+        }
+
+        setMainContentMargin();
+        window.addEventListener("resize", setMainContentMargin);
+
+        resizer.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          document.body.classList.add("resizing");
+          const mouseMoveHandler = (moveEvent) => {
+            let newWidth = moveEvent.clientX;
+            if (newWidth < minWidth) newWidth = minWidth;
+            if (newWidth > maxWidth) newWidth = maxWidth;
+            sidebar.style.width = `${newWidth}px`;
+            setMainContentMargin();
+          };
+          const mouseUpHandler = () => {
+            document.body.classList.remove("resizing");
+            window.removeEventListener("mousemove", mouseMoveHandler);
+            window.removeEventListener("mouseup", mouseUpHandler);
+            if (overallChartInstance) overallChartInstance.resize();
+            if (phaseChartInstance) phaseChartInstance.resize();
+          };
+          window.addEventListener("mousemove", mouseMoveHandler);
+          window.addEventListener("mouseup", mouseUpHandler);
+        });
+
+        const roadmapContentEl = document.getElementById("roadmap-content");
+        let draggedPath = null;
+
+        roadmapContentEl.addEventListener("dragstart", (e) => {
+          const li = e.target.closest('li[draggable="true"]');
+          if (li) {
+            draggedPath = li.dataset.path;
+            setTimeout(() => li.classList.add("dragging"), 0);
+          }
+        });
+
+        roadmapContentEl.addEventListener("dragend", (e) => {
+          const li = e.target.closest('li[draggable="true"]');
+          if (li) li.classList.remove("dragging");
+          document
+            .querySelectorAll(".drop-indicator")
+            .forEach((el) => el.remove());
+          draggedPath = null;
+        });
+
+        roadmapContentEl.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const dropTarget = e.target.closest('li[draggable="true"]');
+          document
+            .querySelectorAll(".drop-indicator")
+            .forEach((el) => el.remove());
+          if (
+            !dropTarget ||
+            !draggedPath ||
+            dropTarget.dataset.path === draggedPath ||
+            (dropTarget.dataset.path &&
+              dropTarget.dataset.path.startsWith(draggedPath + ","))
+          )
+            return;
+          const rect = dropTarget.getBoundingClientRect();
+          const y = e.clientY - rect.top;
+          const dropIndicator = document.createElement("div");
+          dropIndicator.className = "drop-indicator";
+          if (y < rect.height / 2) {
+            dropTarget.before(dropIndicator);
+            dropTarget.dataset.dropPosition = "before";
+          } else {
+            dropTarget.after(dropIndicator);
+            dropTarget.dataset.dropPosition = "after";
+          }
+        });
+
+        roadmapContentEl.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const dropTarget = e.target.closest('li[draggable="true"]');
+          if (!dropTarget || !draggedPath) return;
+          const targetPath = dropTarget.dataset.path;
+          const dropPosition = dropTarget.dataset.dropPosition;
+          if (
+            targetPath &&
+            draggedPath !== targetPath &&
+            !targetPath.startsWith(draggedPath + ",")
+          ) {
+            moveItem(draggedPath, targetPath, dropPosition);
+            renderApp();
+          }
+        });
+
+        window.addEventListener("scroll", () => {
+          let current = "";
+          const sections = document.querySelectorAll(
+            "#roadmap-content section"
+          );
+          const isAtBottom = (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 2;
+
+          if (isAtBottom && sections.length > 0) {
+            current = sections[sections.length - 1].getAttribute("id");
+          } else {
+
+            sections.forEach((section) => {
+              if (window.pageYOffset >= section.offsetTop - 80) {
+                current = section.getAttribute("id");
+              }
+            });
+          }
+
+          document.querySelectorAll("#sidebar-nav a").forEach((link) => {
+            const isActive = link.getAttribute("href").substring(1) === current;
+            link.classList.toggle("bg-teal-50", isActive);
+            link.classList.toggle("text-teal-700", isActive);
+
+            if (isActive) {
+              link.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          });
+        });
+
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter" || e.shiftKey) {
+            return;
+          }
+
+          const confirmModal = document.getElementById("confirm-modal");
+          if (!confirmModal.classList.contains("hidden")) {
+            e.preventDefault();
+            document.getElementById("confirm-modal-confirm").click();
+            return;
+          }
+
+          const formModal = document.getElementById("form-modal");
+          if (!formModal.classList.contains("hidden")) {
+            if (document.activeElement.tagName === "TEXTAREA") {
+              return;
+            }
+            e.preventDefault();
+            const saveBtn = document.getElementById("form-save-btn");
+            const authBtn = formModal.querySelector('#auth-form button[type="submit"]');
+            if (saveBtn) saveBtn.click();
+            else if (authBtn) authBtn.click();
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
