@@ -15,15 +15,15 @@ router.post("/register", async (req, res) => {
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Por favor, preencha todos os campos",
+        message: "Por favor, preencha todos os campos para continuar.",
       });
     }
 
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
-        success: false,
-        message: "Este email já está cadastrado",
+      success: false,
+      message: "Parece que este email já está em uso. Tente usar outro email ou faça login para continuar.",
       });
     }
 
@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
     console.error("Erro no registro:", error);
     res.status(500).json({
       success: false,
-      message: "Não foi possível registrar o usuário. Verifique os dados.",
+      message: "Não foi possível registrar o usuário. Verifique os dados e tente novamente.",
       error: error.message,
     });
   }
@@ -68,8 +68,8 @@ router.post("/login", async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        success: false,
-        message: "Por favor, forneça email e senha",
+      success: false,
+      message: "Por favor, preencha seu email e senha para continuar.",
       });
     }
 
@@ -78,8 +78,8 @@ router.post("/login", async (req, res) => {
 
     if (!user) {
       return res.status(401).json({
-        success: false,
-        message: "Credenciais inválidas",
+      success: false,
+      message: "Email ou senha incorretos. Por favor, verifique suas credenciais e tente novamente.",
       });
     }
 
@@ -108,8 +108,7 @@ router.post("/login", async (req, res) => {
     console.error("Erro no login:", error);
     res.status(500).json({
       success: false,
-      message: "Erro ao fazer login",
-      error: error.message,
+      message: "O servidor está ocupado no momento. Por favor, verifique sua conexão e tente novamente mais tarde.",
     });
   }
 });

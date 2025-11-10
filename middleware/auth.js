@@ -20,7 +20,7 @@ const protect = async (req, res, next) => {
       return res
         .status(401)
         .json({
-          error: "Não autorizado, Por favor, faça login e tente novamente.",
+          error: "Acesso não autorizado, Por favor, faça login e tente novamente.",
         });
     }
 

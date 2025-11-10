@@ -10,6 +10,8 @@ import connectDB from "./config/database.js";
 import authRoutes from "./routes/auth.js";
 import roadmapRoutes from "./routes/roadmap.js";
 
+await connectDB();
+
 const app = express();
 
 const allowedOrigins = [
@@ -63,7 +65,7 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 const port = process.env.PORT || 3000;
-connectDB();
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
