@@ -10,7 +10,9 @@ import connectDB from "./config/database.js";
 import authRoutes from "./routes/auth.js";
 import roadmapRoutes from "./routes/roadmap.js";
 
-await connectDB();
+if (process.env.NODE_ENV !== "test") {
+  await connectDB();
+}
 
 const app = express();
 
@@ -57,7 +59,7 @@ const missingEnvVars = requiredEnvVars.filter(
   (varName) => !process.env[varName]
 );
 
-if (missingEnvVars.length > 0) {
+if (process.env.NODE_ENV !== "test" && missingEnvVars.length > 0) {
   console.error(
     "ERRO: As seguintes variáveis de ambiente estão faltando:",
     missingEnvVars.join(", ")
@@ -139,11 +141,13 @@ app.use((req, res) => {
   });
 });
 
+let server;
 if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
+  server = app.listen(port, () => {
     console.log(`\nServidor rodando em http://localhost:${port}`);
     console.log(`Acesse http://localhost:${port}/index.html no navegador\n`);
   });
 }
 
 export default app;
+export { server };

@@ -49,7 +49,8 @@ const protect = async (req, res, next) => {
   }
 };
 const generateToken = (userId) => {
-  return sign({ id: userId }, process.env.JWT_SECRET, {
+  const secret = process.env.JWT_SECRET || 'test-secret';
+  return sign({ id: userId }, secret, {
     expiresIn: "7d",
   });
 };
