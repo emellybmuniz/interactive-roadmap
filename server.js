@@ -1,16 +1,39 @@
 import "dotenv/config";
-import express from "express";
+import express from 'express';
+import cors from "cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/database.js";
 import authRoutes from "./routes/auth.js";
 import roadmapRoutes from "./routes/roadmap.js";
 
+const app = express();
 
+const allowedOrigins = [
+  "http://127.0.0.1:5500", 
+  "http://localhost:5500", 
+  "http://localhost:3000",
+];
+
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -32,17 +55,9 @@ if (missingEnvVars.length > 0) {
   );
   process.exit(1);
 }
-
-const app = express();
 const port = process.env.PORT || 3000;
 connectDB();
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "*",
-    credentials: true,
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
