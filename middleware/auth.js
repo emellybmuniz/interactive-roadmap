@@ -1,5 +1,7 @@
-import { verify, sign } from "jsonwebtoken";
-import { findById } from "../models/User";
+import jwt from "jsonwebtoken";
+const { verify, sign } = jwt;
+
+import User from "../models/User.js";
 
 const protect = async (req, res, next) => {
   try {
@@ -24,7 +26,7 @@ const protect = async (req, res, next) => {
 
     try {
       const decoded = verify(token, process.env.JWT_SECRET);
-      req.user = await findById(decoded.id).select("-password");
+      req.user = await User.findById(decoded.id).select("-password");
 
       if (!req.user) {
         return res.status(401).json({ error: "Usuário não encontrado." });

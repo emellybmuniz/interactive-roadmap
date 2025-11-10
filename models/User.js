@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // password hashing
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs'; // password hashing
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -64,4 +64,4 @@ userSchema.methods.toJSON = function() {
     return user;
 };
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

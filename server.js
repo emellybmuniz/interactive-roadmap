@@ -1,13 +1,19 @@
-require("dotenv").config();
+import "dotenv/config";
+import express from "express";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import connectDB from "./config/database.js";
+import authRoutes from "./routes/auth.js";
+import roadmapRoutes from "./routes/roadmap.js";
 
-const express = require("express");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const rateLimit = require("express-rate-limit");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const connectDB = require("./config/database");
-const authRoutes = require("./routes/auth").default;
-const roadmapRoutes = require("./routes/roadmap");
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const requiredEnvVars = [
   "GEMINI_API_KEY",

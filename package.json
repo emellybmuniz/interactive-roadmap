@@ -2,6 +2,7 @@
   "name": "interactive-roadmap",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -13,7 +14,7 @@
     "fullstack",
     "mongodb"
   ],
-  "author": "",
+  "author": "Emelly Beatriz",
   "license": "ISC",
   "description": "Roadmap interativo com autenticação e persistência",
   "dependencies": {
