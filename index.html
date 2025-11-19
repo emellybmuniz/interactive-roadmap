@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Roadmap Customizável com IA ✨</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              slate: { 850: "#1f2937" },
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,23 +24,61 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .spinning {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .dragging {
+        opacity: 0.5;
+      }
+      .drop-indicator {
+        height: 2px;
+        background-color: #14b8a6;
+        margin: 4px 0;
+        border-radius: 2px;
+      }
 
+      /* Scrollbar Dark Mode */
+      .dark ::-webkit-scrollbar {
+        width: 8px;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+      .phase-header .action-icon span {
+        cursor: pointer;
+      }
+    </style>
   </head>
 
-  <body class="text-slate-700">
-    <!-- Sidebar Toggle Button (Mobile) -->
+  <body
+    class="bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300 transition-colors duration-300 ease-in-out"
+  >
     <button
       id="sidebar-toggle-open"
-      class="md:hidden fixed top-4 left-4 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-md shadow-lg text-slate-600 hover:text-slate-900 transition-opacity"
+      class="md:hidden fixed top-4 left-4 z-30 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-2 rounded-md shadow-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all duration-300"
     >
       <svg
         class="w-6 h-6"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           stroke-linecap="round"
@@ -40,30 +90,51 @@
     </button>
 
     <div class="flex min-h-screen">
-      <!-- Sidebar Navigation -->
       <aside
         id="sidebar"
-        class="bg-white border-r border-slate-200 p-6 fixed top-0 left-0 h-full flex flex-col transition-transform duration-300 ease-in-out z-40 -translate-x-full md:translate-x-0"
+        class="bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-6 fixed top-0 left-0 h-full flex flex-col transition-all duration-300 ease-in-out z-40 -translate-x-full md:translate-x-0"
         style="width: 328px"
       >
         <div class="flex justify-between items-center mb-6">
-          <h1 class="text-xl font-bold text-slate-800">Fases do Roadmap</h1>
+          <h1
+            class="text-xl font-bold text-slate-800 dark:text-slate-100 transition-colors duration-300"
+          >
+            Fases do Roadmap
+          </h1>
           <button
             id="sidebar-toggle-close"
-            class="md:hidden text-slate-500 hover:text-slate-800 transition-colors text-3xl leading-none"
+            class="md:hidden text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-3xl leading-none"
           >
             &times;
           </button>
         </div>
 
         <nav class="flex-grow overflow-y-auto">
-          <ul id="sidebar-nav" class="space-y-2">
-            <!-- Navigation links will be injected here -->
-          </ul>
+          <ul id="sidebar-nav" class="space-y-2"></ul>
         </nav>
+
         <div
-          class="mt-6 pt-6 border-t border-slate-200 flex-shrink-0 space-y-3" 
+          class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700 flex-shrink-0 space-y-3 transition-colors duration-300"
         >
+          <button
+            onclick="showFormModal({ type: 'phase', mode: 'add' })"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors duration-300 font-semibold mb-3"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Adicionar Fase
+          </button>
 
           <div class="guest-only space-y-3">
             <button
@@ -75,27 +146,32 @@
 
             <button
               onclick="showAuthModal('login')"
-              class="w-full px-4 py-2 text-teal-600 hover:text-teal-700 font-medium border border-teal-600 rounded-lg hover:bg-teal-50 transition-colors"
+              class="w-full px-4 py-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium border border-teal-600 dark:border-teal-500 rounded-lg hover:bg-teal-50 dark:hover:bg-slate-700/50 transition-colors duration-300"
             >
               Carregar Roadmap
             </button>
-            <p class="text-xs text-slate-500 text-center pb-2">
-                Crie uma conta para salvar e acessar seu progresso de qualquer
-                lugar.
-              </p>
+            <p
+              class="text-xs text-slate-500 dark:text-slate-400 text-center pb-2 transition-colors duration-300"
+            >
+              Crie uma conta para salvar e acessar seu progresso de qualquer
+              lugar.
+            </p>
           </div>
         </div>
 
-  
-        <div class="auth-only space-y-3 mt-2 pt-4 border-slate-200" style="display: none;">
-         
-          <div id="sync-status" class="sync-indicator">
+        <div
+          class="auth-only space-y-3 mt-2 pt-4 border-slate-200 dark:border-slate-700"
+          style="display: none"
+        >
+          <div
+            id="sync-status"
+            class="sync-indicator flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 transition-colors duration-300"
+          >
             <svg
               class="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 stroke-linecap="round"
@@ -106,27 +182,15 @@
             </svg>
             <span id="sync-text">Sincronizado</span>
           </div>
-
-          <button
-            onclick="showFormModal({ type: 'phase', mode: 'add' })"
-            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-semibold"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Adicionar Fase
-          </button>
         </div>
       </aside>
 
-      <!-- Resizer Handle -->
       <div
         id="resizer"
-        class="w-1.5 cursor-col-resize bg-slate-200/50 hover:bg-teal-400 transition-colors duration-200 fixed top-0 h-full z-20 hidden md:block"
+        class="w-1.5 cursor-col-resize bg-slate-200/50 dark:bg-slate-700/50 hover:bg-teal-400 transition-colors duration-200 fixed top-0 h-full z-20 hidden md:block"
         style="left: 328px"
       ></div>
 
-    
       <main
         id="main-content"
         class="flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300 ease-in-out"
@@ -136,57 +200,128 @@
             class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
             <div>
-              <h1 class="text-4xl font-bold text-slate-900 mb-2">
+              <h1
+                class="text-4xl font-bold text-slate-900 dark:text-white mb-2 transition-colors duration-300"
+              >
                 Roadmap de Desenvolvimento Tech
               </h1>
-              <p class="text-lg text-slate-500">
+              <p
+                class="text-lg text-slate-500 dark:text-slate-400 transition-colors duration-300"
+              >
                 Uma jornada visual e interativa, com o poder da IA ✨ integrada
                 para acelerar seu aprendizado.
               </p>
             </div>
 
-            <!-- Auth Buttons -->
-            <div class="flex items-center gap-3">
-              <!-- Authenticated user menu -->
-              <div class="auth-only flex items-center gap-4" style="display: none;">
-                <div class="flex flex-col items-end">
-                  <span class="text-base text-slate-600">Olá,</span>
-                  <span
-                    id="user-name-display" 
-                    class="text-lg font-bold text-slate-900"
-                  ></span>
-                </div>
-                <div class="relative group">
-                  <button
-                    class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                  >
-                    <svg
-                      class="w-6 h-6 text-slate-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                      ></path>
-                    </svg>
-                  </button>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5 text-slate-500 dark:text-slate-400 transition-colors duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  ></path>
+                </svg>
+                <label
+                  for="theme-toggle"
+                  class="relative inline-flex items-center cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    value=""
+                    id="theme-toggle"
+                    class="sr-only peer"
+                  />
                   <div
-                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+                    class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500 transition-colors duration-300"
+                  ></div>
+                </label>
+                <svg
+                  class="w-5 h-5 text-slate-500 dark:text-slate-400 transition-colors duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  ></path>
+                </svg>
+              </div>
+
+              <div class="auth-only relative group" style="display: none">
+                <button
+                  class="flex items-center gap-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full py-1.5 px-3 transition-colors duration-300"
+                >
+                  <span
+                    id="user-name-display"
+                    class="font-semibold text-slate-700 dark:text-slate-200"
+                  ></span>
+                  <div
+                    class="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold"
+                    id="user-avatar"
+                  ></div>
+                </button>
+                <div
+                  class="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50"
+                >
+                  <div
+                    class="p-4 border-b border-slate-200 dark:border-slate-700"
                   >
+                    <p
+                      class="font-semibold text-slate-800 dark:text-white"
+                      id="user-menu-name"
+                    ></p>
+                    <p
+                      class="text-sm text-slate-500 dark:text-slate-400"
+                      id="user-menu-email"
+                    ></p>
+                  </div>
+                  <div class="p-2">
                     <button
-                      onclick="AuthManager.deleteAccount()" 
-                      class="w-full text-left px-5 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                      onclick="AuthManager.deleteAccount()"
+                      class="w-full text-left px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-slate-700 rounded-md transition-colors flex items-center gap-2"
                     >
+                      <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        ></path>
+                      </svg>
                       Deletar Conta
                     </button>
                     <button
-                      onclick="AuthManager.logout()" 
-                      class="w-full text-left px-5 py-3 text-base font-medium text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                      onclick="AuthManager.logout()"
+                      class="w-full text-left px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors flex items-center gap-2"
                     >
+                      <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        ></path>
+                      </svg>
                       Sair
                     </button>
                   </div>
@@ -196,21 +331,37 @@
           </div>
         </header>
 
-        <!-- Dashboard Section -->
         <section id="dashboard" class="mb-12">
-          <h2 class="text-2xl font-semibold text-slate-800 mb-4 border-b pb-2">
+          <h2
+            class="text-2xl font-semibold text-slate-800 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 transition-colors duration-300"
+          >
             Painel de Progresso 🎯
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-sm">
-              <h3 class="font-semibold text-center mb-4">Progresso Geral</h3>
+            <div
+              class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm transition-colors duration-300"
+            >
+              <h3
+                class="font-semibold text-center mb-4 text-slate-800 dark:text-slate-200"
+              >
+                Progresso Geral
+              </h3>
               <div class="chart-container">
                 <canvas id="overallProgressChart"></canvas>
               </div>
-              <div id="stats" class="text-center mt-4"></div>
+              <div
+                id="stats"
+                class="text-center mt-4 transition-colors duration-300"
+              ></div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm xl:col-span-2">
-              <h3 class="font-semibold text-left mb-4">Progresso por Fase</h3>
+            <div
+              class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm xl:col-span-2 transition-colors duration-300"
+            >
+              <h3
+                class="font-semibold text-left mb-4 text-slate-800 dark:text-slate-200"
+              >
+                Progresso por Fase
+              </h3>
               <div class="bar-chart-container">
                 <canvas id="phaseProgressChart"></canvas>
               </div>
@@ -222,28 +373,28 @@
       </main>
     </div>
 
-    <!-- Modals -->
     <div
       id="sidebar-overlay"
       class="md:hidden fixed inset-0 bg-black/50 z-30 hidden"
     ></div>
+
     <div
       id="gemini-modal"
-      class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"
+      class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm transition-opacity"
     >
       <div
-        class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transition-colors duration-300"
       >
         <header
-          class="p-4 border-b border-slate-200 flex justify-between items-center flex-shrink-0"
+          class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center flex-shrink-0"
         >
           <h3
             id="gemini-modal-title"
-            class="text-lg font-semibold text-slate-800"
+            class="text-lg font-semibold text-slate-800 dark:text-white"
           ></h3>
           <button
             onclick="hideModal('gemini-modal')"
-            class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button"
+            class="text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
           >
             &times;
           </button>
@@ -259,26 +410,29 @@
           </div>
           <div
             id="gemini-modal-text"
-            class="text-slate-600 leading-relaxed space-y-4"
+            class="text-slate-600 dark:text-slate-300 leading-relaxed space-y-4"
           ></div>
         </div>
       </div>
     </div>
+
     <div
       id="form-modal"
-      class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"
+      class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm transition-opacity"
     >
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+      <div
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-lg transition-colors duration-300"
+      >
         <header
-          class="p-4 border-b border-slate-200 flex justify-between items-center"
+          class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center"
         >
           <h3
             id="form-modal-title"
-            class="text-lg font-semibold text-slate-800"
+            class="text-lg font-semibold text-slate-800 dark:text-white"
           ></h3>
           <button
             onclick="hideModal('form-modal')"
-            class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button"
+            class="text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
           >
             &times;
           </button>
@@ -286,32 +440,39 @@
         <div id="form-modal-content" class="p-6"></div>
       </div>
     </div>
+
     <div
       id="confirm-modal"
-      class="fixed inset-0 bg-slate-900 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden"
+      class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm transition-opacity"
     >
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm">
+      <div
+        class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-sm transition-colors duration-300"
+      >
         <header class="p-4 flex justify-between items-center">
           <h3
             id="confirm-modal-title"
-            class="text-lg font-semibold text-red-600"
+            class="text-lg font-semibold text-red-600 dark:text-red-400"
           ></h3>
           <button
             onclick="hideModal('confirm-modal')"
-            class="text-slate-400 hover:text-slate-800 transition-colors modal-header-button"
+            class="text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
           >
             &times;
           </button>
         </header>
         <div class="p-6 pt-0">
-          <p id="confirm-modal-text" class="text-slate-600 mb-6"></p>
+          <p
+            id="confirm-modal-text"
+            class="text-slate-600 dark:text-slate-300 mb-6"
+          ></p>
           <div class="flex justify-end gap-4">
             <button
               id="confirm-modal-cancel"
-              class="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300"
+              class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
             >
-              Cancelar</button
-            ><button
+              Cancelar
+            </button>
+            <button
               id="confirm-modal-confirm"
               class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
@@ -329,22 +490,25 @@
           title: "Fundamentos",
           description: "Base do conhecimento técnico.",
           items: [
-        { text: "Mentalidade Orientada a Problemas", checked: true },
-        { text: "Git & GitHub: Fundamentos de versionamento de código.", checked: true },
-        { text: "Linha de Comando (CLI)", checked: true },
-        { text: "HTTP/HTTPS", checked: true },
-        { text: "JSON", checked: true },
-        { text: "Cloud: Conceitos básicos", checked: false },
-        { text: "SQL: Fundamentos de bancos de dados", checked: false },
-        {
-          text: "Gerenciamento de Pacotes",
-          checked: false,
-          subItems: [
-            { text: "npm / Yarn", checked: true },
-            { text: "venv (Python)", checked: false },
-            { text: "Maven / Gradle (Java)", checked: false },
-          ],
-        },
+            { text: "Mentalidade Orientada a Problemas", checked: true },
+            {
+              text: "Git & GitHub: Fundamentos de versionamento de código.",
+              checked: true,
+            },
+            { text: "Linha de Comando (CLI)", checked: true },
+            { text: "HTTP/HTTPS", checked: true },
+            { text: "JSON", checked: true },
+            { text: "Cloud: Conceitos básicos", checked: false },
+            { text: "SQL: Fundamentos de bancos de dados", checked: false },
+            {
+              text: "Gerenciamento de Pacotes",
+              checked: false,
+              subItems: [
+                { text: "npm / Yarn", checked: true },
+                { text: "venv (Python)", checked: false },
+                { text: "Maven / Gradle (Java)", checked: false },
+              ],
+            },
           ],
         },
         {
@@ -352,28 +516,28 @@
           title: "Desenvolvimento Front-End",
           description: "Construindo a interface visual.",
           items: [
-        { text: "HTML", checked: true },
-        { text: "CSS", checked: true },
-        { text: "JavaScript: Fundamentos", checked: true },
-        { text: "Manipulação do DOM", checked: true },
-        { text: "Assincronicidade", checked: false },
-        { text: "TypeScript", checked: false },
-        {
-          text: "Frameworks",
-          checked: false,
-          subItems: [
-            { text: "React.js", checked: false },
-            { text: "Next.js", checked: false },
-          ],
-        },
-        {
-          text: "Ferramentas de Build",
-          checked: false,
-          subItems: [
-            { text: "Webpack", checked: false },
-            { text: "Vite", checked: false },
-          ],
-        },
+            { text: "HTML", checked: true },
+            { text: "CSS", checked: true },
+            { text: "JavaScript: Fundamentos", checked: true },
+            { text: "Manipulação do DOM", checked: true },
+            { text: "Assincronicidade", checked: false },
+            { text: "TypeScript", checked: false },
+            {
+              text: "Frameworks",
+              checked: false,
+              subItems: [
+                { text: "React.js", checked: false },
+                { text: "Next.js", checked: false },
+              ],
+            },
+            {
+              text: "Ferramentas de Build",
+              checked: false,
+              subItems: [
+                { text: "Webpack", checked: false },
+                { text: "Vite", checked: false },
+              ],
+            },
           ],
         },
         {
@@ -381,19 +545,19 @@
           title: "Desenvolvimento Back-End",
           description: "Criando a lógica do servidor.",
           items: [
-        { text: "Node.js", checked: false },
-        { text: "Express.js", checked: false },
-        { text: "APIs: REST e GraphQL", checked: false },
-        { text: "Autenticação", checked: false },
-        { text: "Banco de Dados", checked: false },
-        {
-          text: "NoSQL",
-          checked: false,
-          subItems: [
-            { text: "MongoDB", checked: true },
-            { text: "Mongoose", checked: false },
-          ],
-        },
+            { text: "Node.js", checked: false },
+            { text: "Express.js", checked: false },
+            { text: "APIs: REST e GraphQL", checked: false },
+            { text: "Autenticação", checked: false },
+            { text: "Banco de Dados", checked: false },
+            {
+              text: "NoSQL",
+              checked: false,
+              subItems: [
+                { text: "MongoDB", checked: true },
+                { text: "Mongoose", checked: false },
+              ],
+            },
           ],
         },
         {
@@ -401,10 +565,10 @@
           title: "Testes e Qualidade",
           description: "Garantindo a funcionalidade do código.",
           items: [
-        { text: "Jest", checked: false },
-        { text: "Cypress", checked: false },
-        { text: "ESLint", checked: true },
-        { text: "Prettier", checked: true },
+            { text: "Jest", checked: false },
+            { text: "Cypress", checked: false },
+            { text: "ESLint", checked: true },
+            { text: "Prettier", checked: true },
           ],
         },
         {
@@ -412,11 +576,11 @@
           title: "Infraestrutura e DevOps",
           description: "Implantando e gerenciando aplicações.",
           items: [
-        { text: "Docker", checked: false },
-        { text: "Kubernetes", checked: false },
-        { text: "CI/CD", checked: false },
-        { text: "AWS", checked: true },
-        { text: "Azure", checked: false },
+            { text: "Docker", checked: false },
+            { text: "Kubernetes", checked: false },
+            { text: "CI/CD", checked: false },
+            { text: "AWS", checked: true },
+            { text: "Azure", checked: false },
           ],
         },
       ];
@@ -425,9 +589,90 @@
       let overallChartInstance = null;
       let phaseChartInstance = null;
 
-      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3000/api'
-        : '/api'; // Production URL
+      const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+          ? "http://localhost:3000/api"
+          : "/api";
+
+      const ThemeManager = {
+        init() {
+          this.toggle = document.getElementById("theme-toggle");
+          if (!this.toggle) return;
+
+          if (
+            localStorage.theme === "dark" ||
+            (!("theme" in localStorage) &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches)
+          ) {
+            document.documentElement.classList.add("dark");
+            this.toggle.checked = true;
+          } else {
+            document.documentElement.classList.remove("dark");
+            this.toggle.checked = false;
+          }
+
+          this.toggle.addEventListener("change", () => {
+            if (this.toggle.checked) {
+              document.documentElement.classList.add("dark");
+              localStorage.theme = "dark";
+            } else {
+              document.documentElement.classList.remove("dark");
+              localStorage.theme = "light";
+            }
+            this.updateCharts();
+          });
+        },
+
+        isDarkMode() {
+          return document.documentElement.classList.contains("dark");
+        },
+
+        updateCharts() {
+          const isDark = this.isDarkMode();
+          const textColor = isDark ? "#cbd5e1" : "#475569";
+          const gridColor = isDark ? "#334155" : "#e2e8f0";
+          const tooltipBgColor = isDark ? "#1e293b" : "#ffffff";
+          const tooltipTitleColor = isDark ? "#f1f5f9" : "#1e293b";
+
+          if (overallChartInstance) {
+            overallChartInstance.data.datasets[0].backgroundColor = [
+              isDark ? "#0d9488" : "#14b8a6",
+              isDark ? "#334155" : "#e2e8f0",
+            ];
+            overallChartInstance.data.datasets[0].borderColor = isDark
+              ? "#1e293b"
+              : "#ffffff";
+            overallChartInstance.options.plugins.tooltip.backgroundColor =
+              tooltipBgColor;
+            overallChartInstance.options.plugins.tooltip.titleColor =
+              tooltipTitleColor;
+            overallChartInstance.options.plugins.tooltip.bodyColor = textColor;
+            overallChartInstance.update();
+          }
+          if (phaseChartInstance) {
+            phaseChartInstance.data.datasets[0].backgroundColor = isDark
+              ? "#2dd4bf"
+              : "#5eead4";
+            phaseChartInstance.options.scales.x.ticks.color = textColor;
+            phaseChartInstance.options.scales.x.grid.color = gridColor;
+            phaseChartInstance.options.scales.y.ticks.color = textColor;
+            phaseChartInstance.options.scales.y.grid.color = gridColor;
+            phaseChartInstance.options.plugins.tooltip.backgroundColor =
+              tooltipBgColor;
+            phaseChartInstance.options.plugins.tooltip.titleColor =
+              tooltipTitleColor;
+            phaseChartInstance.options.plugins.tooltip.bodyColor = textColor;
+            phaseChartInstance.update();
+          }
+
+          const statsEl = document.getElementById("stats-text");
+          if (statsEl)
+            statsEl.className = `text-4xl font-bold ${
+              isDark ? "text-white" : "text-slate-800"
+            } transition-colors duration-300`;
+        },
+      };
 
       const AuthManager = {
         token: localStorage.getItem("authToken"),
@@ -440,7 +685,7 @@
             if (isValid) {
               await this.loadUserData();
               this.showAuthenticatedUI();
-              await this.saveRoadmapToServer();
+              await this.loadRoadmapFromServer();
             } else {
               this.logout();
             }
@@ -480,7 +725,7 @@
             const response = await fetch(`${API_BASE_URL}/auth/register`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ name, email, password }),
+              body: JSON.stringify({ name, email, password, roadmapData }),
             });
             const data = await response.json();
             if (response.ok) {
@@ -488,15 +733,12 @@
               this.currentUser = data.user;
               localStorage.setItem("authToken", data.token);
               this.showAuthenticatedUI();
-              await this.loadRoadmapFromServer();
+              this.updateSyncStatus("synced");
               return { success: true, message: data.message };
             }
             return { success: false, message: data.message };
           } catch (error) {
-            return {
-              success: false,
-              message: "Erro ao conectar com o servidor. Por favor, verifique sua conexão com a internet e tente novamente mais tarde.",
-            };
+            return { success: false, message: "Erro ao conectar com o servidor." };
           }
         },
 
@@ -513,7 +755,6 @@
               this.currentUser = data.user;
               localStorage.setItem("authToken", data.token);
               this.showAuthenticatedUI();
-
               await this.loadRoadmapFromServer();
               return { success: true, message: data.message };
             }
@@ -521,35 +762,38 @@
           } catch (error) {
             return {
               success: false,
-              message: "Erro ao conectar com o servidor. Por favor, verifique sua conexão com a internet e tente novamente mais tarde.",
+              message: "Erro ao conectar com o servidor.",
             };
           }
         },
 
-        logout() {
+        async logout() {
+          if (this.isSyncing) return;
+          await this.saveRoadmapToServer(); 
+          this.token = null;
+          this.currentUser = null;
           localStorage.removeItem("authToken");
+          this.showGuestUI();
           window.location.reload();
         },
 
         async deleteAccount() {
-          if (
-            !confirm(
-              "Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita!"
-            )
-          )
-            return;
-          try {
-            const response = await fetch(`${API_BASE_URL}/auth/delete`, {
-              method: "DELETE",
-              headers: { Authorization: `Bearer ${this.token}` },
+                      showConfirmModal({
+              title: "Deletar Conta",
+              text: "Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita e todo o seu progresso será perdido.",
+              onConfirm: async () => {
+                try {
+                  const response = await fetch(`${API_BASE_URL}/auth/delete`, {
+                    method: "DELETE",
+                    headers: { Authorization: `Bearer ${this.token}` },
+                  });
+                  if (response.ok) {
+                    alert("Conta deletada com sucesso!");
+                    await this.logout();
+                  } else { alert("Erro ao deletar conta."); }
+                } catch (error) { alert("Erro ao deletar conta."); }
+            },
             });
-            if (response.ok) {
-              alert("Conta deletada com sucesso!");
-              this.logout();
-            }
-          } catch (error) {
-            alert("Erro ao deletar conta");
-          }
         },
 
         async loadRoadmapFromServer() {
@@ -580,11 +824,8 @@
               },
               body: JSON.stringify({ roadmapData }),
             });
-            if (response.ok) {
-              this.updateSyncStatus("synced");
-            } else {
-              this.updateSyncStatus("error");
-            }
+            if (response.ok) this.updateSyncStatus("synced");
+            else this.updateSyncStatus("error");
           } catch (error) {
             this.updateSyncStatus("error");
           } finally {
@@ -596,10 +837,8 @@
           const indicator = document.getElementById("sync-status");
           const text = document.getElementById("sync-text");
           if (!indicator || !text) return;
-
           indicator.classList.remove("syncing");
           const icon = indicator.querySelector("svg");
-
           if (status === "syncing") {
             indicator.classList.add("syncing");
             text.textContent = "Salvando...";
@@ -614,8 +853,20 @@
         },
 
         updateUserDisplay() {
-          const el = document.getElementById("user-name-display");
-          if (el && this.currentUser) el.textContent = this.currentUser.name;
+          const nameEl = document.getElementById("user-name-display");
+          const avatarEl = document.getElementById("user-avatar");
+          const menuNameEl = document.getElementById("user-menu-name");
+          const menuEmailEl = document.getElementById("user-menu-email");
+          if (this.currentUser) {
+            if (nameEl)
+              nameEl.textContent = this.currentUser.name.split(" ")[0];
+            if (avatarEl)
+              avatarEl.textContent = this.currentUser.name
+                .charAt(0)
+                .toUpperCase();
+            if (menuNameEl) menuNameEl.textContent = this.currentUser.name;
+            if (menuEmailEl) menuEmailEl.textContent = this.currentUser.email;
+          }
         },
 
         showAuthenticatedUI() {
@@ -637,6 +888,14 @@
             .forEach((el) => (el.style.display = "none"));
         },
       };
+      
+      window.addEventListener("beforeunload", (e) => {
+        if (AuthManager.token && AuthManager.isSyncing) {
+          const confirmationMessage = "Suas alterações ainda estão sendo salvas. Deseja realmente sair?";
+          (e || window.event).returnValue = confirmationMessage;
+          return confirmationMessage;
+        }
+      });
 
       function showAuthModal(mode = "login") {
         const title = mode === "login" ? "Entrar" : "Criar Conta";
@@ -652,29 +911,28 @@
                     ${
                       mode === "register"
                         ? `<div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nome</label>
-                        <input type="text" id="auth-name" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nome</label>
+                        <input type="text" id="auth-name" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition-colors">
                     </div>`
                         : ""
                     }
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                        <input type="email" id="auth-email" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                        <input type="email" id="auth-email" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Senha</label>
-                        <input type="password" id="auth-password" required minlength="6" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500">
-                        <p class="text-xs text-slate-500 mt-1">Mínimo 6 caracteres</p>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Senha</label>
+                        <input type="password" id="auth-password" required minlength="6" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition-colors">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Mínimo 6 caracteres</p>
                     </div>
-                    <div id="auth-error" class="text-red-600 text-sm hidden"></div>
-                    <div class="flex flex-col gap-3">
-                        <button type="submit" class="w-full px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 font-semibold">${buttonText}</button>
+                    <div id="auth-error" class="text-red-600 dark:text-red-400 text-sm hidden"></div>
+                    <div class="flex flex-col gap-3 pt-2">
+                        <button type="submit" class="w-full px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 font-semibold transition-colors">${buttonText}</button>
                         <button type="button" onclick="showAuthModal('${
                           mode === "login" ? "register" : "login"
-                        }')" class="text-sm text-teal-600 hover:text-teal-700">${switchText}</button>
+                        }')" class="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">${switchText}</button>
                     </div>
-                </form>
-            `;
+                </form>`;
 
         document.getElementById("auth-form").onsubmit = async (e) => {
           e.preventDefault();
@@ -700,7 +958,6 @@
         showModal("form-modal");
       }
 
-      // Resto do código original continua aqui...
       function toggleSidebar(open) {
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebar-overlay");
@@ -730,7 +987,7 @@
         document.getElementById("gemini-modal-loader").style.display = "flex";
         document.getElementById("gemini-modal-text").innerHTML = "";
         try {
-            const response = await fetch(`${API_BASE_URL}/gemini`, {
+          const response = await fetch(`${API_BASE_URL}/gemini`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt }),
@@ -850,27 +1107,27 @@
           isPhase ? "Fase" : "Item"
         }`;
         let currentData = {};
-        if (!isAdd) {
+        if (!isAdd)
           currentData = isPhase
             ? roadmapData[parseInt(path)]
             : findItemContextByPath(path).item;
-        }
+
         document.getElementById("form-modal-title").textContent = title;
         document.getElementById("form-modal-content").innerHTML = `
                 <div class="space-y-4">
                     <div>
-                        <label for="form-input-text" class="block text-sm font-medium text-slate-700">${
+                        <label for="form-input-text" class="block text-sm font-medium text-slate-700 dark:text-slate-300">${
                           isPhase ? "Título" : "Nome"
                         }</label>
-                        <input type="text" id="form-input-text" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md" value="${
+                        <input type="text" id="form-input-text" class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-md transition-colors outline-none focus:ring-2 focus:ring-teal-500" value="${
                           (isPhase ? currentData.title : currentData.text) || ""
                         }">
                     </div>
                     ${
                       isPhase
                         ? `<div>
-                        <label for="form-input-desc" class="block text-sm font-medium text-slate-700">Descrição</label>
-                        <textarea id="form-input-desc" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md">${
+                        <label for="form-input-desc" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Descrição</label>
+                        <textarea id="form-input-desc" class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-md transition-colors outline-none focus:ring-2 focus:ring-teal-500">${
                           currentData.description || ""
                         }</textarea>
                     </div>`
@@ -878,7 +1135,7 @@
                     }
                 </div>
                 <div class="flex justify-end mt-6">
-                    <button id="form-save-btn" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">Salvar</button>
+                    <button id="form-save-btn" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors">Salvar</button>
                 </div>
             `;
         document.getElementById("form-save-btn").onclick = () => {
@@ -979,22 +1236,22 @@
 
         const renderList = (items, pathPrefix) => {
           let html =
-            '<ul class="space-y-1 mt-4 pl-4 border-l-2 border-slate-200">';
+            '<ul class="space-y-1 mt-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 transition-colors duration-300">';
           items.forEach((item, index) => {
             const currentPath = `${pathPrefix},${index}`;
             const icon = item.checked ? "✅" : "⬜️";
-            html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 rounded-md p-2 hover:bg-slate-100 group cursor-pointer">
+            html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 dark:text-slate-300 rounded-md p-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 group cursor-pointer transition-colors duration-200">
                         <div class="flex items-center justify-between">
                             <span class="flex items-center cursor-pointer" onclick="toggleTask('${currentPath}', event)"><span class="mr-3">${icon}</span><span>${
               item.text
             }</span></span>
-                            <span class="action-icon flex items-center gap-3 text-lg">
+                            <span class="action-icon flex items-center gap-3 text-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                 <span onclick="handleCrud('add', 'item', '${currentPath}', event)" title="Adicionar">➕</span>
                                 <span onclick="handleCrud('edit', 'item', '${currentPath}', event)" title="Editar">✏️</span>
                                 <span onclick="getExplanation('${item.text.replace(
                                   /'/g,
                                   "\\'"
-                                )}', event)" title="IA">✨</span>
+                                  )}', event)" title="Explicação com IA">✨</span>
                                 <span onclick="handleCrud('delete', 'item', '${currentPath}', event)" title="Excluir">🗑️</span>
                             </span>
                         </div>`;
@@ -1006,7 +1263,7 @@
 
         if (roadmapData.length === 0) {
           roadmapContent.innerHTML =
-            '<div class="text-center p-12 bg-white rounded-xl"><h2 class="text-2xl font-semibold">Roadmap Vazio</h2></div>';
+            '<div class="text-center p-12 bg-white dark:bg-slate-800 rounded-xl transition-colors duration-300"><h2 class="text-2xl font-semibold text-slate-800 dark:text-white">Roadmap Vazio</h2></div>';
         }
 
         roadmapData.forEach((phase, phaseIndex) => {
@@ -1021,8 +1278,8 @@
           const navLink = document.createElement("a");
           navLink.href = `#phase-${phase.phase}`;
           navLink.className =
-            "flex items-start px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-md";
-          navLink.innerHTML = `<span class="w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold text-teal-600 bg-teal-100 rounded-full mr-3">${phase.phase}</span><span class="break-words pt-1">${phase.title}</span>`;
+            "flex items-start px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors duration-300";
+          navLink.innerHTML = `<span class="w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold text-teal-600 dark:text-teal-400 bg-teal-100 dark:bg-teal-900/30 rounded-full mr-3 transition-colors">${phase.phase}</span><span class="break-words pt-1">${phase.title}</span>`;
           navLink.onclick = () => {
             if (window.innerWidth < 768) toggleSidebar(false);
           };
@@ -1031,10 +1288,10 @@
           sidebarNav.appendChild(li);
 
           roadmapContent.innerHTML += `
-                    <section id="phase-${phase.phase}" class="pt-4">
-                        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-sm">
+                    <section id="phase-${phase.phase}" class="pt-4 scroll-mt-8">
+                        <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-sm transition-colors duration-300">
                             <div class="flex justify-between items-center phase-header">
-                                <h2 class="text-2xl font-semibold text-slate-800">${
+                                <h2 class="text-2xl font-semibold text-slate-800 dark:text-white transition-colors duration-300">${
                                   phase.title
                                 }</h2>
                                 <span class="action-icon flex items-center gap-4 text-xl">
@@ -1042,12 +1299,12 @@
                                     <span onclick="handleCrud('delete', 'phase', '${phaseIndex}', event)" title="Excluir">🗑️</span>
                                 </span>
                             </div>
-                            <p class="text-slate-500 mt-1">${
+                            <p class="text-slate-500 dark:text-slate-400 mt-1 transition-colors duration-300">${
                               phase.description
                             }</p>
                             <div class="mt-4">
-                               <button onclick="showFormModal({ type: 'item', mode: 'add', phaseIndex: ${phaseIndex} })" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200 text-sm font-medium">Adicionar Item</button>
-                               <button onclick="getProjectSuggestion(${phaseIndex}, event)" class="ml-2 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 text-teal-700 rounded-md hover:bg-teal-100 text-sm font-semibold">Projeto ✨</button>
+                               <button onclick="showFormModal({ type: 'item', mode: 'add', phaseIndex: ${phaseIndex} })" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors duration-300">Adicionar Item</button>
+                               <button onclick="getProjectSuggestion(${phaseIndex}, event)" class="ml-2 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 rounded-md hover:bg-teal-100 dark:hover:bg-teal-900/40 text-sm font-semibold transition-colors duration-300">Sugerir Projeto com IA ✨</button>
                             </div>
                             ${renderList(phase.items, String(phaseIndex))}
                         </div>
@@ -1056,9 +1313,12 @@
 
         const overallPercentage =
           totalItems > 0 ? ((completedItems / totalItems) * 100).toFixed(1) : 0;
+        const isDark = ThemeManager.isDarkMode();
         document.getElementById(
           "stats"
-        ).innerHTML = `<p class="text-4xl font-bold text-slate-800">${overallPercentage}%</p><p class="text-sm text-slate-500">${completedItems} de ${totalItems}</p>`;
+        ).innerHTML = `<p id="stats-text" class="text-4xl font-bold ${
+          isDark ? "text-white" : "text-slate-800"
+        } transition-colors duration-300">${overallPercentage}%</p><p class="text-sm text-slate-500 dark:text-slate-400 transition-colors duration-300">${completedItems} de ${totalItems}</p>`;
 
         const overallCtx = document
           .getElementById("overallProgressChart")
@@ -1102,8 +1362,10 @@
           options: {
             indexAxis: "y",
             responsive: true,
-            maintainAspectRatio: false,
-            scales: { x: { beginAtZero: true, max: 100 } },
+            scales: {
+              x: { beginAtZero: true, max: 100, grid: { display: false } },
+              y: { grid: { display: false } },
+            },
             plugins: {
               legend: { display: false },
               tooltip: {
@@ -1121,6 +1383,7 @@
             },
           },
         });
+        ThemeManager.updateCharts(); // Force initial color sync
 
         clearTimeout(window.saveTimeout);
         window.saveTimeout = setTimeout(
@@ -1130,6 +1393,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", async () => {
+        ThemeManager.init();
         await AuthManager.init();
         renderApp();
 
@@ -1250,12 +1514,12 @@
           const sections = document.querySelectorAll(
             "#roadmap-content section"
           );
-          const isAtBottom = (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 2;
-
+          const isAtBottom =
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 2;
           if (isAtBottom && sections.length > 0) {
             current = sections[sections.length - 1].getAttribute("id");
           } else {
-
             sections.forEach((section) => {
               if (window.pageYOffset >= section.offsetTop - 80) {
                 current = section.getAttribute("id");
@@ -1265,36 +1529,30 @@
 
           document.querySelectorAll("#sidebar-nav a").forEach((link) => {
             const isActive = link.getAttribute("href").substring(1) === current;
-            link.classList.toggle("bg-teal-50", isActive);
-            link.classList.toggle("text-teal-700", isActive);
-
-            if (isActive) {
-              link.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
+            const isDark = ThemeManager.isDarkMode();
+            link.classList.toggle("bg-teal-50", isActive && !isDark);
+            link.classList.toggle("text-teal-700", isActive && !isDark);
+            link.classList.toggle("bg-teal-900/30", isActive && isDark);
+            link.classList.toggle("text-teal-300", isActive && isDark);
           });
         });
 
-
         document.addEventListener("keydown", (e) => {
-          if (e.key !== "Enter" || e.shiftKey) {
-            return;
-          }
-
+          if (e.key !== "Enter" || e.shiftKey) return;
           const confirmModal = document.getElementById("confirm-modal");
           if (!confirmModal.classList.contains("hidden")) {
             e.preventDefault();
             document.getElementById("confirm-modal-confirm").click();
             return;
           }
-
           const formModal = document.getElementById("form-modal");
           if (!formModal.classList.contains("hidden")) {
-            if (document.activeElement.tagName === "TEXTAREA") {
-              return;
-            }
+            if (document.activeElement.tagName === "TEXTAREA") return;
             e.preventDefault();
             const saveBtn = document.getElementById("form-save-btn");
-            const authBtn = formModal.querySelector('#auth-form button[type="submit"]');
+            const authBtn = formModal.querySelector(
+              '#auth-form button[type="submit"]'
+            );
             if (saveBtn) saveBtn.click();
             else if (authBtn) authBtn.click();
           }
