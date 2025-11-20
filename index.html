@@ -72,7 +72,7 @@
   >
     <button
       id="sidebar-toggle-open"
-      class="md:hidden fixed top-4 left-4 z-30 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-2 rounded-md shadow-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all duration-300"
+      class="md:hidden fixed top-4 left-4 z-30 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-2 rounded-md shadow-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors transition-opacity duration-300"
     >
       <svg
         class="w-6 h-6"
@@ -92,7 +92,7 @@
     <div class="flex min-h-screen">
       <aside
         id="sidebar"
-        class="bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-6 fixed top-0 left-0 h-full flex flex-col transition-all duration-300 ease-in-out z-40 -translate-x-full md:translate-x-0"
+        class="bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 p-6 fixed top-0 left-0 h-full flex flex-col transition-[width,transform] duration-300 ease-in-out z-40 -translate-x-full md:translate-x-0"
         style="width: 328px"
       >
         <div class="flex justify-between items-center mb-6">
@@ -193,9 +193,9 @@
 
       <main
         id="main-content"
-        class="flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300 ease-in-out"
+        class="flex-1 p-4 sm:p-6 md:p-8 transition-[margin-left] duration-300 ease-in-out"
       >
-        <header class="mb-8">
+        <header class="mb-8 mt-16 md:mt-0">
           <div
             class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
@@ -257,7 +257,7 @@
                 </svg>
               </div>
 
-              <div class="auth-only relative group" style="display: none">
+              <div id="user-menu" class="auth-only relative group" style="display: none">
                 <button
                   class="flex items-center gap-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full py-1.5 px-3 transition-colors duration-300"
                 >
@@ -271,7 +271,8 @@
                   ></div>
                 </button>
                 <div
-                  class="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50"
+                  id="user-menu-dropdown"
+                  class="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 invisible md:group-hover:opacity-100 md:group-hover:visible transition-opacity transition-transform duration-200 transform origin-top-right scale-95 md:group-hover:scale-100 z-50"
                 >
                   <div
                     class="p-4 border-b border-slate-200 dark:border-slate-700"
@@ -1242,10 +1243,10 @@
             const icon = item.checked ? "✅" : "⬜️";
             html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 dark:text-slate-300 rounded-md p-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 group cursor-pointer transition-colors duration-200">
                         <div class="flex items-center justify-between">
-                            <span class="flex items-center cursor-pointer" onclick="toggleTask('${currentPath}', event)"><span class="mr-3">${icon}</span><span>${
+                          <span class="flex items-center" onclick="toggleTask('${currentPath}', event)"><span class="mr-3">${icon}</span><span>${
               item.text
             }</span></span>
-                            <span class="action-icon flex items-center gap-3 text-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="action-icon flex items-center gap-3 text-lg md:opacity-0 group-hover:opacity-100 transition-opacity">
                                 <span onclick="handleCrud('add', 'item', '${currentPath}', event)" title="Adicionar">➕</span>
                                 <span onclick="handleCrud('edit', 'item', '${currentPath}', event)" title="Editar">✏️</span>
                                 <span onclick="getExplanation('${item.text.replace(
@@ -1289,12 +1290,12 @@
 
           roadmapContent.innerHTML += `
                     <section id="phase-${phase.phase}" class="pt-4 scroll-mt-8">
-                        <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-sm transition-colors duration-300">
-                            <div class="flex justify-between items-center phase-header">
+                      <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-sm transition-colors duration-300 group">
+                        <div class="flex justify-between items-center phase-header "
                                 <h2 class="text-2xl font-semibold text-slate-800 dark:text-white transition-colors duration-300">${
                                   phase.title
                                 }</h2>
-                                <span class="action-icon flex items-center gap-4 text-xl">
+                                <span class="action-icon flex items-center gap-4 text-xl md:opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span onclick="handleCrud('edit', 'phase', '${phaseIndex}', event)" title="Editar">✏️</span>
                                     <span onclick="handleCrud('delete', 'phase', '${phaseIndex}', event)" title="Excluir">🗑️</span>
                                 </span>
@@ -1304,7 +1305,7 @@
                             }</p>
                             <div class="mt-4">
                                <button onclick="showFormModal({ type: 'item', mode: 'add', phaseIndex: ${phaseIndex} })" class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors duration-300">Adicionar Item</button>
-                               <button onclick="getProjectSuggestion(${phaseIndex}, event)" class="ml-2 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 rounded-md hover:bg-teal-100 dark:hover:bg-teal-900/40 text-sm font-semibold transition-colors duration-300">Sugerir Projeto com IA ✨</button>
+                               <button onclick="getProjectSuggestion(${phaseIndex}, event)" class="ml-2 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 rounded-md hover:bg-teal-100 dark:hover:bg-teal-900/40 text-sm font-semibold transition-colors duration-300">Gerar Ideia de Projeto com IA ✨</button>
                             </div>
                             ${renderList(phase.items, String(phaseIndex))}
                         </div>
@@ -1383,7 +1384,7 @@
             },
           },
         });
-        ThemeManager.updateCharts(); // Force initial color sync
+        ThemeManager.updateCharts(); 
 
         clearTimeout(window.saveTimeout);
         window.saveTimeout = setTimeout(
@@ -1396,6 +1397,37 @@
         ThemeManager.init();
         await AuthManager.init();
         renderApp();
+
+        const userMenu = document.getElementById("user-menu");
+        if (userMenu) {
+          const userMenuButton = userMenu.querySelector("button");
+          const userMenuDropdown = document.getElementById("user-menu-dropdown");
+
+          const openDropdown = () => {
+            userMenuDropdown.classList.remove("opacity-0", "invisible", "scale-95");
+            userMenuDropdown.classList.add("opacity-100", "scale-100");
+          };
+
+          const closeDropdown = () => {
+            userMenuDropdown.classList.add("opacity-0", "invisible", "scale-95");
+            userMenuDropdown.classList.remove("opacity-100", "scale-100");
+          };
+
+          userMenuButton.addEventListener("click", (event) => {
+            if (window.innerWidth < 768) {
+              event.stopPropagation();
+              if (userMenuDropdown.classList.contains("invisible")) {
+                openDropdown();
+              } else {
+                closeDropdown();
+              }
+            }
+          });
+
+          document.addEventListener("click", (event) => {
+            if (window.innerWidth < 768 && userMenu && !userMenu.contains(event.target)) closeDropdown();
+          });
+        }
 
         document
           .getElementById("sidebar-toggle-open")
