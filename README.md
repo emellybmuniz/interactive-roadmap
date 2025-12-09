@@ -8,7 +8,7 @@
 ![Project Status](https://img.shields.io/badge/Status%20-%20em%20desenvolvimento%20-%20%23EB3731)
 ![GitHub Stars](https://img.shields.io/github/stars/emellybmuniz/interactive-roadmap?style=social)
 
-Um roadmap interativo e inteligente que guia desenvolvedores em sua jornada de aprendizado, combinando rastreamento de progresso, persistência de dados e o poder da IA Gemini para explicações e sugestões de projetos personalizados. Tenha controle total do que você está estudando com uma interface moderna e intuitiva.
+Um roadmap interativo e inteligente que guia profissionais de TI em sua jornada de aprendizado, combinando rastreamento de progresso, persistência de dados e o poder da IA Gemini para explicações e sugestões de projetos personalizados. Tenha controle total do seu plano de estudos, customizando cada passo do seu caminho.
 
 ---
 ### 📋 Índice
@@ -32,12 +32,13 @@ Um roadmap interativo e inteligente que guia desenvolvedores em sua jornada de a
 ## 🚀 Visão Geral do Projeto
 [![Project Demonstration](src/images/project-demo)](https://emellybmuniz.github.io/interactive-roadmap/)
 
-O **path4developers** nasceu da necessidade de organizar a vasta quantidade de tecnologias que um desenvolvedor Full Stack precisa dominar. Mais do que uma simples lista, é uma ferramenta interativa que permite:
+O **path4developers** nasceu para solucionar a falta de organização nos estudos de **profissionais de TI**. O roadmap padrão incluído é apenas um **rascunho do potencial da aplicação** — o grande diferencial é a liberdade para **planejar seu próprio caminho**.
 
-- **Contexto e Motivação:** Oferecer um caminho claro e estruturado para iniciantes e profissionais que desejam se atualizar.
-- **Principais Benefícios:** Rastreamento visual de progresso com gráficos, explicações instantâneas via IA e persistência de dados na nuvem.
-- **Público-alvo:** Estudantes de tecnologia, desenvolvedores em transição de carreira e autodidatas.
-- **Conceitos Técnicos:** Integração de API de IA (Gemini), autenticação segura (JWT), manipulação avançada de DOM, e arquitetura MVC no backend.
+Mais do que uma lista estática, é uma plataforma de planejamento de carreira que permite:
+- **Customização Total:** Adicione, edite, exclua e reordene (drag & drop) tópicos para criar um plano de estudos 100% personalizado para seus objetivos.
+- **Contexto e Motivação:** Estruture seu aprendizado, seja você iniciante, pleno ou sênior, em qualquer área (DevOps, Data Science, Cyber Security, etc).
+- **Inteligência Artificial:** Receba explicações instantâneas e sugestões de projetos práticos via IA para qualquer tópico que você adicionar.
+- **Público-alvo:** Profissionais de TI em geral, estudantes e autodidatas que desejam ter controle sobre sua evolução técnica.
 
 ## 📂 Estrutura de Diretórios
 ```bash
@@ -62,10 +63,10 @@ interactive-roadmap/
 
 ## ✨ Destaques & Funcionalidades
 
-### 🎯 **Roadmap Interativo & Inteligente**
-- **Marcação de Progresso:** Checkboxes para marcar itens e subitens concluídos, atualizando automaticamente os gráficos.
-- **Integração com IA (Gemini):** Clique no ícone de brilho (✨) para receber explicações imediatas sobre qualquer tecnologia, ou no botão "Projeto" para sugestões práticas de estudo.
-- **Drag & Drop:** Organize suas prioridades arrastando e soltando itens na lista.
+### 🎯 **Planeje Seu Próprio Caminho**
+- **Edição Completa:** O roadmap inicial é apenas um exemplo. Você tem liberdade total para renomear fases, criar novos tópicos e excluir o que não faz sentido para você.
+- **Drag & Drop:** Priorize seus estudos arrastando e soltando itens conforme sua necessidade.
+- **Integração com IA (Gemini):** A IA se adapta ao seu roadmap. Clique no ícone ✨ em qualquer item customizado para receber explicações contextualizadas.
 
 ### 🎨 **Design & Interface Moderna**
 - **Modo Escuro/Claro:** Alternância de tema com persistência de preferência do usuário.
@@ -79,7 +80,7 @@ interactive-roadmap/
 
 ### ✅ **Segurança & Persistência**
 - **Autenticação Segura:** Sistema de login e registro com **JWT** e hash de senhas (**bcryptjs**).
-- **Persistência em Nuvem:** Seus dados são salvos automaticamente no **MongoDB**, permitindo acesso de qualquer dispositivo.
+- **Persistência em Nuvem:** Seu roadmap personalizado é salvo automaticamente no **MongoDB**, permitindo acesso de qualquer dispositivo.
 - **Rate Limiting:** Proteção contra abuso nas rotas de API e autenticação.
 
 ## 🛠️ Tecnologias Utilizadas
@@ -93,7 +94,7 @@ Este projeto foi construído utilizando as seguintes tecnologias:
 
 ### Detalhes Técnicos:
 - **Backend**: Node.js com Express, estruturado em MVC (Models, Views/Routes, Controllers/Logic).
-- **Banco de Dados**: MongoDB Atlas com Mongoose para modelagem de dados.
+- **Banco de Dados**: MongoDB Atlas com Mongoose para modelagem de dados flexível (JSON store).
 - **Frontend**: HTML5, Vanilla JS e TailwindCSS (via CDN) para agilidade e leveza.
 - **IA Generativa**: Google Gemini API para geração dinâmica de conteúdo educacional.
 
@@ -125,10 +126,10 @@ $ npm run dev
 **Alternativa:** Acesse a versão online em [path4developers.vercel.app](https://path4developers.vercel.app/)
 
 ## 💡 Como Usar
-1.  **Crie uma Conta:** Registre-se para salvar seu progresso na nuvem.
-2.  **Explore o Roadmap:** Navegue pelas fases (Fundamentos, Frontend, Backend, etc.) na barra lateral.
+1.  **Crie uma Conta:** Registre-se para salvar seu roadmap personalizado na nuvem.
+2.  **Personalize:** Use os botões de editar (✏️) e excluir (🗑️) para moldar o roadmap aos seus objetivos de carreira. Adicione novas fases e tópicos.
 3.  **Marque seu Progresso:** Clique nos checkboxes conforme domina cada tecnologia.
-4.  **Aprenda com IA:** Clique no ícone ✨ ao lado de qualquer item para uma explicação rápida.
+4.  **Aprenda com IA:** Clique no ícone ✨ ao lado de qualquer item (mesmo os que você criou) para uma explicação rápida.
 5.  **Pratique:** Clique no botão "Projeto" em cada fase para receber uma sugestão de desafio prático da IA.
 
 ## ⚙️ Configuração
@@ -169,8 +170,8 @@ PORT=3000
 |--------|----------|-----------|--------|
 | POST | `/api/auth/register` | Cria novo usuário e retorna token | Público |
 | POST | `/api/auth/login` | Autentica usuário e retorna token | Público |
-| GET | `/api/roadmap` | Obtém o roadmap salvo do usuário | Privado (JWT) |
-| PUT | `/api/roadmap` | Atualiza o estado do roadmap | Privado (JWT) |
+| GET | `/api/roadmap` | Obtém o roadmap personalizado do usuário | Privado (JWT) |
+| PUT | `/api/roadmap` | Salva alterações no roadmap (estrutura e progresso) | Privado (JWT) |
 | POST | `/api/gemini` | Envia prompt para IA e retorna texto | Limitado |
 
 ## 🤝 Contribuição
@@ -187,11 +188,11 @@ Contribuições são sempre bem-vindas e **muito apreciadas!** Sinta-se à vonta
 
 ## 🚀 Melhorias Futuras
 ### Próximas Funcionalidades:
+- [ ] **Templates de Carreira** - Pré-sets para DevOps, Data Science, Mobile, etc.
 - [ ] **Gamificação** - Sistema de badges e níveis conforme o progresso.
 - [ ] **Compartilhamento Social** - Botão para compartilhar o roadmap ou certificados no LinkedIn.
 - [ ] **Exportação** - Baixar o roadmap como PDF ou Imagem.
-- [ ] **Comunidade** - Seção para ver roadmaps de outros usuários.
-- [ ] **Notificações** - Lembretes de estudo por email.
+- [ ] **Comunidade** - Seção para ver e clonar roadmaps de outros usuários.
 
 ### Melhorias Técnicas:
 - [ ] Migração do Frontend para React/Next.js para melhor escalabilidade.
@@ -212,4 +213,4 @@ Desenvolvido por **Emelly Beatriz** com ❤️
 
 ---
 ⭐ **Gostou do projeto?** Deixe uma estrela no repositório para apoiar o desenvolvimento!
-**#Roadmap #DesenvolvimentoWeb #IA #JavaScript #FullStack**
+**#Roadmap #DesenvolvimentoWeb #IA #JavaScript #CareerPlanning**
