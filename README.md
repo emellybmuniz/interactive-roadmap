@@ -196,7 +196,7 @@ Contribuições são sempre bem-vindas e **muito apreciadas!** Sinta-se à vonta
 - [ ] **Sugerir projeto considerando todo o progresso concluído em todas as fases**
 
 ## 🔑 Licença
-Este projeto está licenciado sob a **Licença --** - consulte o arquivo [--](package.json) para obter mais detalhes.
+Este projeto está licenciado sob a **Licença GNU Lesser General Public License v2.1* - consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes.
 
 ## ✍️ Autora
 Desenvolvido por **Emelly Beatriz** com ❤️
