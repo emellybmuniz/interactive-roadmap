@@ -47,7 +47,6 @@
         border-radius: 2px;
       }
 
-      /* Scrollbar Dark Mode */
       .dark ::-webkit-scrollbar {
         width: 8px;
       }
@@ -196,12 +195,12 @@
           <div
             class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
-            <div>
-              <h1
-                class="text-4xl font-bold text-slate-900 dark:text-white mb-2 transition-colors duration-300"
-              >
+            <div class="">
+                <h1
+                class="text-4xl font-bold text-slate-900 dark:text-white mb-2 transition-colors duration-300 pt-12 md:pt-0"
+                >
                 Roadmap de Desenvolvimento Tech
-              </h1>
+                </h1>
               <p
                 class="text-lg text-slate-500 dark:text-slate-400 transition-colors duration-300"
               >
@@ -254,8 +253,9 @@
                 </svg>
               </div>
 
-              <div class="auth-only relative group" style="display: none">
+              <div class="auth-only relative" style="display: none">
                 <button
+                  id="user-menu-button"
                   class="flex items-center gap-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full py-1.5 px-3 transition-colors duration-300"
                 >
                   <span
@@ -268,7 +268,8 @@
                   ></div>
                 </button>
                 <div
-                  class="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50"
+                  id="user-menu-dropdown"
+                  class="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 invisible transition-all duration-200 transform origin-top-right scale-95 z-50"
                 >
                   <div
                     class="p-4 border-b border-slate-200 dark:border-slate-700"
@@ -902,7 +903,7 @@
         const switchText =
           mode === "login"
             ? "Não tem uma conta? Registre-se"
-            : "Já tem uma conta? Entre";
+            : "Já possui uma conta? Faça login";
 
         document.getElementById("form-modal-title").textContent = title;
         document.getElementById("form-modal-content").innerHTML = `
@@ -957,6 +958,22 @@
         showModal("form-modal");
       }
 
+      function closeAllItemMenus() {
+        document.querySelectorAll('.item-menu').forEach(menu => menu.classList.add('hidden'));
+      }
+
+      function toggleItemMenu(event) {
+          event.stopPropagation();
+          const button = event.currentTarget;
+          const menu = button.nextElementSibling;
+          const isHidden = menu.classList.contains('hidden');
+          // Close all other menus before opening a new one
+          closeAllItemMenus();
+          if (isHidden) {
+              menu.classList.remove('hidden');
+          }
+      }
+
       function toggleSidebar(open) {
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebar-overlay");
@@ -965,10 +982,12 @@
           sidebar.classList.remove("-translate-x-full");
           overlay.classList.remove("hidden");
           openBtn.classList.add("opacity-0", "pointer-events-none");
+          document.body.classList.add("overflow-hidden");
         } else {
           sidebar.classList.add("-translate-x-full");
           overlay.classList.add("hidden");
           openBtn.classList.remove("opacity-0", "pointer-events-none");
+          document.body.classList.remove("overflow-hidden");
         }
       }
 
@@ -1239,20 +1258,35 @@
           items.forEach((item, index) => {
             const currentPath = `${pathPrefix},${index}`;
             const icon = item.checked ? "✅" : "⬜️";
-            html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 dark:text-slate-300 rounded-md p-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 group cursor-pointer transition-colors duration-200">
+            html += `<li draggable="true" data-path="${currentPath}" class="text-slate-600 dark:text-slate-300 rounded-md p-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors duration-200">
                         <div class="flex items-center justify-between">
                             <span class="flex items-center cursor-pointer" onclick="toggleTask('${currentPath}', event)"><span class="mr-3">${icon}</span><span>${
               item.text
             }</span></span>
-                            <span class="action-icon flex items-center gap-3 text-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span onclick="handleCrud('add', 'item', '${currentPath}', event)" title="Adicionar">➕</span>
-                                <span onclick="handleCrud('edit', 'item', '${currentPath}', event)" title="Editar">✏️</span>
-                                <span onclick="getExplanation('${item.text.replace(
+                            <div class="relative ml-auto">
+                                <span class="action-icon hidden md:flex items-center gap-3 text-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="cursor-pointer" onclick="handleCrud('add', 'item', '${currentPath}', event)" title="Adicionar Subitem">➕</span>
+                                    <span class="cursor-pointer" onclick="handleCrud('edit', 'item', '${currentPath}', event)" title="Editar">✏️</span>
+                                    <span class="cursor-pointer" onclick="getExplanation('${item.text.replace(
                                   /'/g,
                                   "\\'"
-                                )}', event)" title="IA">✨</span>
-                                <span onclick="handleCrud('delete', 'item', '${currentPath}', event)" title="Excluir">🗑️</span>
-                            </span>
+                                )}', event)" title="Explicar com IA">✨</span>
+                                    <span class="cursor-pointer" onclick="handleCrud('delete', 'item', '${currentPath}', event)" title="Excluir">🗑️</span>
+                                </span>
+                                <button class="md:hidden p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700" onclick="toggleItemMenu(event)">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                                </button>
+                                <div class="item-menu absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-20 hidden">
+                                    <a href="javascript:void(0)" onclick="handleCrud('add', 'item', '${currentPath}', event); closeAllItemMenus();" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">➕ Adicionar Subitem</a>
+                                    <a href="javascript:void(0)" onclick="handleCrud('edit', 'item', '${currentPath}', event); closeAllItemMenus();" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">✏️ Editar</a>
+                                    <a href="javascript:void(0)" onclick="getExplanation('${item.text.replace(
+                                      /'/g,
+                                      "\\'"
+                                    )}', event); closeAllItemMenus();" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">✨ Explicar com IA</a>
+                                    <div class="my-1 border-t border-slate-200 dark:border-slate-700"></div>
+                                    <a href="javascript:void(0)" onclick="handleCrud('delete', 'item', '${currentPath}', event); closeAllItemMenus();" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-slate-700">🗑️ Excluir</a>
+                                </div>
+                            </div>
                         </div>`;
             if (item.subItems) html += renderList(item.subItems, currentPath);
             html += `</li>`;
@@ -1283,6 +1317,8 @@
             if (window.innerWidth < 768) toggleSidebar(false);
           };
           const li = document.createElement("li");
+          li.draggable = true;
+          li.dataset.phaseIndex = phaseIndex;
           li.appendChild(navLink);
           sidebarNav.appendChild(li);
 
@@ -1294,8 +1330,8 @@
                                   phase.title
                                 }</h2>
                                 <span class="action-icon flex items-center gap-4 text-xl">
-                                    <span onclick="handleCrud('edit', 'phase', '${phaseIndex}', event)" title="Editar">✏️</span>
-                                    <span onclick="handleCrud('delete', 'phase', '${phaseIndex}', event)" title="Excluir">🗑️</span>
+                                    <span class="cursor-pointer" onclick="handleCrud('edit', 'phase', '${phaseIndex}', event)" title="Editar">✏️</span>
+                                    <span class="cursor-pointer" onclick="handleCrud('delete', 'phase', '${phaseIndex}', event)" title="Excluir">🗑️</span>
                                 </span>
                             </div>
                             <p class="text-slate-500 dark:text-slate-400 mt-1 transition-colors duration-300">${
@@ -1338,7 +1374,7 @@
             responsive: true,
             maintainAspectRatio: false,
             cutout: "68%",
-            plugins: { legend: { display: false } },
+            plugins: { legend: { display: window.innerWidth < 768 } },
           },
         });
 
@@ -1351,7 +1387,6 @@
             labels: roadmapData.map((p) => `Fase ${p.phase}`),
             datasets: [
               {
-                label: "Progresso (%)",
                 data: phaseProgress.map((p) => p.percentage),
                 backgroundColor: "#5eead4",
                 borderRadius: 4,
@@ -1375,14 +1410,15 @@
               },
             },
             onClick: (e, els) => {
-              if (els.length)
+              if (window.innerWidth >= 768 && els.length) {
                 document
                   .getElementById(`phase-${roadmapData[els[0].index].phase}`)
                   .scrollIntoView({ behavior: "smooth" });
+              }
             },
           },
         });
-        ThemeManager.updateCharts(); // Force initial color sync
+        ThemeManager.updateCharts(); 
 
         clearTimeout(window.saveTimeout);
         window.saveTimeout = setTimeout(
@@ -1406,6 +1442,109 @@
           .getElementById("sidebar-overlay")
           .addEventListener("click", () => toggleSidebar(false));
 
+        const sidebarNavEl = document.getElementById("sidebar-nav");
+        let draggedPhaseIndex = null;
+
+        sidebarNavEl.addEventListener("dragstart", (e) => {
+          const li = e.target.closest('li[draggable="true"]');
+          if (li) {
+            draggedPhaseIndex = parseInt(li.dataset.phaseIndex);
+            setTimeout(() => li.classList.add("dragging"), 0);
+          }
+        });
+
+        sidebarNavEl.addEventListener("dragend", (e) => {
+          const li = e.target.closest('li[draggable="true"]');
+          if (li) li.classList.remove("dragging");
+          document
+            .querySelectorAll(".drop-indicator")
+            .forEach((el) => el.remove());
+          draggedPhaseIndex = null;
+        });
+
+        sidebarNavEl.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const dropTarget = e.target.closest('li[draggable="true"]');
+          document
+            .querySelectorAll(".drop-indicator")
+            .forEach((el) => el.remove());
+
+          if (!dropTarget || draggedPhaseIndex === null) return;
+
+          const targetIndex = parseInt(dropTarget.dataset.phaseIndex);
+          if (targetIndex === draggedPhaseIndex) return;
+
+          const rect = dropTarget.getBoundingClientRect();
+          const y = e.clientY - rect.top;
+
+          const dropIndicator = document.createElement("div");
+          dropIndicator.className = "drop-indicator";
+
+          if (y < rect.height / 2) {
+            dropTarget.before(dropIndicator);
+            dropTarget.dataset.dropPosition = "before";
+          } else {
+            dropTarget.after(dropIndicator);
+            dropTarget.dataset.dropPosition = "after";
+          }
+        });
+
+        sidebarNavEl.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const dropTarget = e.target.closest('li[draggable="true"]');
+          if (!dropTarget || draggedPhaseIndex === null) return;
+
+          const targetIndex = parseInt(dropTarget.dataset.phaseIndex);
+          const dropPosition = dropTarget.dataset.dropPosition;
+
+          if (draggedPhaseIndex !== targetIndex) {
+            const phaseToMove = roadmapData[draggedPhaseIndex];
+            let insertIndex =
+              dropPosition === "before" ? targetIndex : targetIndex + 1;
+
+            if (draggedPhaseIndex < insertIndex) {
+              insertIndex--;
+            }
+
+            roadmapData.splice(draggedPhaseIndex, 1);
+            roadmapData.splice(insertIndex, 0, phaseToMove);
+
+            roadmapData.forEach((p, i) => (p.phase = String(i)));
+
+            renderApp();
+          }
+        });
+
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenuDropdown = document.getElementById('user-menu-dropdown');
+
+        if (userMenuButton) {
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const isInvisible = userMenuDropdown.classList.contains('invisible');
+                if (isInvisible) {
+                    userMenuDropdown.classList.remove('opacity-0', 'invisible', 'scale-95');
+                    userMenuDropdown.classList.add('opacity-100', 'visible', 'scale-100');
+                } else {
+                    userMenuDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                    userMenuDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                }
+            });
+        }
+
+        document.addEventListener('click', (event) => {
+            const itemMenuButton = event.target.closest('[onclick="toggleItemMenu(event)"]');
+            if (!itemMenuButton) {
+                closeAllItemMenus();
+            }
+            if (userMenuButton && userMenuDropdown && !userMenuDropdown.classList.contains('invisible')) {
+                if (!userMenuButton.contains(event.target) && !userMenuDropdown.contains(event.target)) {
+                    userMenuDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                    userMenuDropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+                }
+            }
+        });
+
         const sidebar = document.getElementById("sidebar");
         const resizer = document.getElementById("resizer");
         const mainContent = document.getElementById("main-content");
@@ -1413,11 +1552,19 @@
         const maxWidth = 500;
 
         function setMainContentMargin() {
-          if (window.innerWidth < 768) {
+          const isMobile = window.innerWidth < 768;
+          if (isMobile) {
             mainContent.style.marginLeft = "0px";
           } else {
             mainContent.style.marginLeft = sidebar.style.width;
             resizer.style.left = sidebar.style.width;
+          }
+
+          if (overallChartInstance) {
+            if (overallChartInstance.options.plugins.legend.display !== isMobile) {
+                overallChartInstance.options.plugins.legend.display = isMobile;
+                overallChartInstance.update();
+            }
           }
         }
 
