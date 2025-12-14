@@ -18,7 +18,7 @@
   "license": "ISC",
   "description": "Roadmap interativo com autenticação e persistência",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
+    "@google/genai": "^1.32.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",

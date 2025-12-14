@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from 'express';
 import cors from "cors";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -88,8 +88,7 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
-const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genai.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/roadmap", roadmapRoutes);
@@ -100,12 +99,19 @@ app.post("/api/gemini", apiLimiter, async (req, res) => {
     if (!prompt) {
       return res.status(400).json({ error: "O prompt é obrigatório" });
     }
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    res.json({ text: response.text() });
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: prompt,
+    });
+    const text = response.text;
+    res.json({ text });
   } catch (error) {
     console.error("Erro ao chamar a API do Gemini:", error);
-    res.status(500).json({ error: "Falha ao chamar a API do Gemini" });
+    const status = error.status || 500;
+    res.status(status).json({ 
+      error: "Falha ao chamar a API do Gemini",
+      details: error.message 
+    });
   }
 });
 
